@@ -62,6 +62,7 @@ class Tables(unittest.TestCase):
                 self.assertIn("info.bus_stop", row["only"])
                 self.assertNotIn("info.living_street", row["only"])
                 self.assertFalse(row["verified"])
+                self.assertLessEqual(set(row["only"]), set(systems["rules"]), code)
         for code in ("US", "CA", "XX", None):
             self.assertIsNone(roadsigns.system(code))
 
