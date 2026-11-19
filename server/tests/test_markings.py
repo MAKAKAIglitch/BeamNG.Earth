@@ -45,6 +45,15 @@ class StyleTest(unittest.TestCase):
         self.assertEqual(markings.style("US").centre, "line_yellow")
         self.assertEqual(markings.style("GB").lane_urban, (1.0, 5.0))
 
+    def test_cis_dash_lengths_follow_gost_speed_bands(self):
+        self.assertEqual(markings.road_style("RU", kmh=60).centre_rural, (3.0, 9.0))
+        self.assertEqual(markings.road_style("RU", kmh=61).centre_rural, (4.0, 12.0))
+        self.assertEqual(markings.road_style("KZ", kmh=90).lane_motorway, (4.0, 12.0))
+        self.assertEqual(markings.road_style("BY", kmh=50, urban=True).centre_urban, (3.0, 9.0))
+        self.assertEqual(markings.road_style("RU", motorway=True).centre_rural, (4.0, 12.0))
+        self.assertEqual(markings.road_style("RU", urban=True).centre_urban, (3.0, 9.0))
+        self.assertEqual(markings.road_style("DE", kmh=50).centre_rural, (6.0, 12.0))
+
 
 class DashTest(unittest.TestCase):
     def test_dashes_follow_the_line_and_its_phase(self):
