@@ -46,6 +46,24 @@ class Tables(unittest.TestCase):
             self.assertIsNone(roadsigns.system("NL"))
         self.assertIsNone(roadsigns.system(None))
 
+    def test_post_soviet_sign_profiles_are_explicit_and_restrained(self):
+        systems = roadsigns.tables()[1]["countries"]
+        expected = ("RU", "BY", "KZ", "KG", "TJ", "TM", "UZ", "AM", "AZ", "GE", "MD")
+        for code in expected:
+            with self.subTest(country=code):
+                row = roadsigns.system(code)
+                self.assertIsNotNone(row)
+                self.assertEqual(row["atlas"], "vienna_w")
+                self.assertEqual(row["lateral"], [0.5, 1.5])
+                self.assertEqual(row["mount"], [2.0, 2.0])
+                self.assertEqual(row["gap_m"], [15, 50])
+                self.assertIn("prio.stop", row["only"])
+                self.assertIn("warn.curve_right", row["only"])
+                self.assertIn("info.bus_stop", row["only"])
+                self.assertNotIn("info.living_street", row["only"])
+        for code in ("US", "CA", "XX", None):
+            self.assertIsNone(roadsigns.system(code))
+
     def test_atlas_drawings_match_the_roles(self):
         sys.path.insert(0, TOOLS)
         import build_sign_atlas
