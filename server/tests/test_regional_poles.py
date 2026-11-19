@@ -90,7 +90,7 @@ class CountryPolesTest(unittest.TestCase):
     """Mode "poles": the country's own poles only, no signs, stops or French kit."""
 
     def test_europe_and_its_neighbours_get_their_poles_the_rest_stock(self):
-        for country in ("DE", "UA", "PL", "CZ", "FR", "TR"):
+        for country in ("DE", "UA", "PL", "CZ", "FR", "TR", "RU", "BY", "KZ", "KG", "TJ", "TM", "UZ"):
             self.assertEqual(pp.profile_for(country, "poles"), pp.EU_KIT + ":" + country, country)
         for country in ("US", "CA", "JP", None, "", "ZZ"):
             self.assertIsNone(pp.profile_for(country, "poles"), country)
