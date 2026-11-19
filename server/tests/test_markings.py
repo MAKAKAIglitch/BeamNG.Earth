@@ -53,7 +53,6 @@ class StyleTest(unittest.TestCase):
         self.assertEqual(markings.road_style("RU", kmh=60, urban=True).centre_urban, (1.0, 3.0))
         self.assertEqual(markings.road_style("RU", urban=True).centre_urban, (1.0, 3.0))
         self.assertEqual(markings.road_style("RU", motorway=True).centre_rural, (4.0, 12.0))
-        self.assertEqual(markings.road_style("RU", urban=True).centre_urban, (1.0, 3.0))
         self.assertEqual(markings.road_style("DE", kmh=50).centre_rural, (6.0, 12.0))
 
 
