@@ -18,12 +18,22 @@ import numpy as np
 ROOT=Path(__file__).resolve().parents[2]
 sys.path[:0]=[str(ROOT/'server'),str(ROOT/'tools')]
 import countrybounds,europeinfra as ei,furniture,geodesy,poleprofiles as pp
+import euguardrails
 import regionalmarkers,regionalstops,roads,signmesh,townsigns
 import build_european_infrastructure as assets
 
 NS={'c':'http://www.collada.org/2005/11/COLLADASchema'}
 
 class GeographyTest(unittest.TestCase):
+    def test_cis_and_central_asian_roadside_families_are_registered(self):
+        countries = ("RU", "BY", "UA", "MD", "GE", "AM", "AZ", "KZ", "KG", "TJ", "TM", "UZ")
+        for code in countries:
+            with self.subTest(country=code):
+                self.assertIn(code, ei.KITS)
+                self.assertIn(code, euguardrails.PROFILES)
+                self.assertIn(code, pp.EUROPE_COUNTRIES)
+                self.assertNotEqual(pp.choose(pp.profile_for(code, "europe"), "road-1"), pp.STOCK)
+
     def test_quebec_not_all_canada_and_turkey(self):
         points=[(45.5017,-73.5673,'stop_arret'),(46.8139,-71.2080,'stop_arret'),
                 (45.4772,-75.7016,'stop_arret'),(45.4215,-75.6972,'stop'),
