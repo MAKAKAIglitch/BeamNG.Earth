@@ -67,6 +67,15 @@ class ProfileTest(unittest.TestCase):
             lengths=[roadmarkings.arc(np.array(c['n']))[-1] for c in chunks if c['m']=='line_white']
             self.assertGreater(sum(abs(n-1.2)<.002 for n in lengths),20)
 
+    def test_cis_speed_profile_reaches_the_road_renderer(self):
+        for kmh, expected in ((60, 3.0), (61, 4.0), (None, 4.0)):
+            with self.subTest(kmh=kmh):
+                sp = spec()._replace(kmh=kmh)
+                ex = roads.extras(sp, LINE, 37.0, country='RU', defer_dashes=True)
+                lanes = [look for look, _, _ in ex if look.get('kind') == 'lane' and look.get('dash')]
+                self.assertTrue(lanes)
+                self.assertEqual({look['tl'] for look in lanes}, {expected})
+
     def test_foreign_and_minor_road_styles_remain_native(self):
         for country,lon in (('GB',0.),('DE',10.),('CA',-100.)):
             ex=roads.extras(spec(),LINE,lon,country=country,defer_dashes=True)
