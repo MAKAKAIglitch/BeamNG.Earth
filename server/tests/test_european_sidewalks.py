@@ -49,6 +49,14 @@ class EuropeanSidewalksTest(unittest.TestCase):
                          walks=walks, park=park, roads_out=carriageways, left_hand=True)
         return walks, park, carriageways
 
+    def test_post_soviet_sidewalk_palettes_are_explicit_and_supported(self):
+        countries = ("RU", "BY", "UA", "MD", "GE", "AM", "AZ", "KZ", "KG", "TJ", "TM", "UZ")
+        supported = {"asphalt", "light_asphalt", "concrete", "slabs", "pavers", "stone"}
+        for code in countries:
+            with self.subTest(country=code):
+                self.assertTrue(europewalks.PALETTES[code])
+                self.assertLessEqual(set(europewalks.PALETTES[code]), supported)
+
     def test_narrow_street_has_grass_between_two_paths_and_no_parking_lanes(self):
         feats = self.features([[(20, 100), (175, 100)]], ["residential"], widths=[(0, 5.)])
         feats.attrs["osm_sidewalk"] = np.array(["both"])
