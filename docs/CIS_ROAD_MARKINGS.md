@@ -28,9 +28,11 @@ context:
 
 | Context | Paint | Gap | Use |
 |---|---:|---:|---|
-| Ordinary road, mapped limit up to 60 km/h | 3 m | 9 m | 1:3 broken-line family |
+| Urban road, mapped limit up to 60 km/h | 1 m | 3 m | 1:3 broken-line family |
+| Ordinary non-urban road, mapped limit up to 60 km/h | 3 m | 9 m | 1:3 broken-line family |
 | Mapped limit above 60 km/h | 4 m | 12 m | 1:3 broken-line family |
-| Speed missing, ordinary/urban road | 3 m | 9 m | conservative fallback |
+| Speed missing, urban road | 1 m | 3 m | conservative built-up fallback |
+| Speed missing, ordinary non-urban road | 3 m | 9 m | conservative fallback |
 | Speed missing, motorway | 4 m | 12 m | high-speed fallback |
 
 The implementation uses white as the permanent longitudinal marking colour.
@@ -40,8 +42,10 @@ and other country profiles are kept separate.
 
 For Russia, the speed split follows the 1.5 line family in GOST R 51256-2018:
 3/9 m is one of the options at limits up to 60 km/h and 4/12 m is the
-high-speed option above 60 km/h. The renderer only knows the mapped speed
-limit when that data is present; it does not invent one.
+high-speed option above 60 km/h. The 2025 Rosavtodor ODM recommends 1/3 m for
+1.5 inside built-up areas at limits up to 60 km/h; that shorter city pattern is
+selected here. The renderer only knows the mapped speed limit when that data
+is present; it does not invent one.
 
 The full marking catalogue is not implemented yet. Approach line 1.6, special
 yellow stopping/parking lines, bus-stop boxes, stop lines, arrows, text,
@@ -125,6 +129,8 @@ branch only; they have not been merged into `main`.
 
 - Russia, GOST R 51256-2018, road marking dimensions and dash patterns:
   https://protect.gost.ru/gost/details/e84660db-4e3b-4c82-9627-c142a36355d2
+- Russia, ODM 218.6.1.009-2025, recommended marking lengths in built-up areas:
+  https://base.garant.ru/412371764/
 - Russia, GOST R 52290-2024, road-sign designs and directional-board colours
   (effective 1 January 2026):
   https://protect.gost.ru/gost/details/39b75217-29bd-492b-94f4-c0dccb72b299
