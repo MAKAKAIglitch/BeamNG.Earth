@@ -76,6 +76,12 @@ class ProfileTest(unittest.TestCase):
                 self.assertTrue(lanes)
                 self.assertEqual({look['tl'] for look in lanes}, {expected})
 
+        urban = spec()._replace(urban=True, kmh=60)
+        ex = roads.extras(urban, LINE, 37.0, country='RU', defer_dashes=True)
+        lanes = [look for look, _, _ in ex if look.get('kind') == 'lane' and look.get('dash')]
+        self.assertTrue(lanes)
+        self.assertEqual({look['tl'] for look in lanes}, {1.0})
+
     def test_foreign_and_minor_road_styles_remain_native(self):
         for country,lon in (('GB',0.),('DE',10.),('CA',-100.)):
             ex=roads.extras(spec(),LINE,lon,country=country,defer_dashes=True)
