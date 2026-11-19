@@ -40,7 +40,7 @@ class GeographyTest(unittest.TestCase):
     def test_actual_border_changes_poles_without_airports(self):
         token=pp.geographic_profile('europe')
         for lat,lon,code in [(49.026,7.816,'FR'),(49.06593,7.79547,'DE'),
-                             (55.75,37.62,'RU'),(39.9334,32.8597,'TR'),(45.50,-73.56,'CA')]:
+                             (55.75,37.62,'RU'),(39.9334,32.8597,'TR'),(41.2995,69.2401,'UZ'),(45.50,-73.56,'CA')]:
             frame=geodesy.EnuFrame(lat,lon)
             self.assertEqual(pp.country_selector(token,frame)(0,0,0),code)
             style=pp.selector(token,frame)('road',0,0,0)
