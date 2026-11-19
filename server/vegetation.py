@@ -41,7 +41,7 @@ import staging
 
 log = logging.getLogger("earthd.vegetation")
 
-VERSION = 28          # (the cached cells hold their groups: 14 for the regional rules of GitHub #110; 16: the roads'
+VERSION = 29          # (the cached cells hold their groups: 14 for the regional rules of GitHub #110; 16: the roads'
                       # drawn widths and sidewalks kept clear; 17: BC's lidar canopy heights, mapdata's canopy layer 2;
                       # 18: the rounded junction corners kept clear, roadcorners.py; 19: one tree per flat crown,
                       # thin_tops; 20: none on or beside a bridge deck, _mask_decks; 21: orchard rows, canopy trees
@@ -107,6 +107,21 @@ PATH_CLASSES = {"footway", "path", "steps", "cycleway", "bridleway", "pedestrian
 ROAD_HALF_WIDTH_M = {"motorway": 7.0, "trunk": 6.0, "primary": 5.5, "secondary": 5.0, "tertiary": 4.5,
                      "residential": 4.0, "service": 3.0, "unclassified": 3.5, "living_street": 3.0}
 ROAD_HALF_DEFAULT_M = 2.5
+# Canopy maxima that fall inside a road are normally shifted into a tree pit
+# by the curb. In the post-Soviet region this creates street-tree rows that
+# are uncommon on ordinary roads. Keep mapped/real vegetation away from this
+# heuristic only; existing trees and forests outside the carriageway remain.
+POST_SOVIET_NO_ROADSIDE_TREE_PUSH = frozenset(
+    ("AM", "AZ", "BY", "GE", "KG", "KZ", "MD", "RU", "TJ", "TM", "UA", "UZ")
+)
+
+
+def roadside_tree_move_allowed(codes):
+    """Vector mask: do not synthesize roadside tree pits in post-Soviet countries."""
+    return np.fromiter((str(code or "").upper() not in POST_SOVIET_NO_ROADSIDE_TREE_PUSH
+                        for code in codes), dtype=bool, count=len(codes))
+
+
 SCATTER_CELL_M = 6.0        # the hashed scatter's grid (one candidate per cell)
 # class: (bush, rock). Tree cover (10) gets an understory (Columbia's photos: forest edges are thickets
 # of shrubs and vines under the trees; ours were bare ground between trunks), also under the canopy.
@@ -466,6 +481,17 @@ class Vegetation:
             nr = np.rint(rj_ + push[1, rj_, ri_]).astype(np.int64)
             ok = (nc >= 0) & (nc < n_c) & (nr >= 0) & (nr < n_r)
             ok[ok] &= ~blocked[nr[ok], nc[ok]] & ~curb[nr[ok], nc[ok]]
+            # The normal street-tree heuristic shifts a crown found over asphalt
+            # onto the nearest tree pit. Suppress that shift in the post-Soviet
+            # region, where such deliberate roadside rows are not a safe default.
+            # Border lookup is batched and only runs in the broad Eurasian window.
+            if ok.any() and lat1 > 34.0 and lat0 < 84.0 and (lon1 > 18.0 or lon0 < -168.0):
+                import countrybounds
+                candidates = np.flatnonzero(ok)
+                target_lon, target_lat = _to4326(mx[nc[candidates]], my[nr[candidates]])
+                codes = countrybounds.bundled().codes_at(np.column_stack((target_lat, target_lon)))
+                keep = roadside_tree_move_allowed(codes)
+                ok[candidates[~keep]] = False
             moved = np.zeros(h.shape, bool)
             moved[nr[ok], nc[ok]] = True
             moved[~rj, :] = False
