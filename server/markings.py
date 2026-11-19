@@ -112,9 +112,9 @@ def style(country=None, lon=None):
 def road_style(country=None, lon=None, kmh=None, urban=False, motorway=False):
     """A road-context style; CIS dash lengths follow the speed bands in GOST R 51256-2018.
 
-    GOST 1.5 uses a 1:3 dash/gap family. Up to 60 km/h the selected visual
-    option is 3/9 m; above 60 km/h it is 4/12 m. Where the mapped speed is
-    missing, use 3/9 m on ordinary/urban roads and 4/12 m on motorways.
+    GOST 1.5 uses a 1:3 dash/gap family. In built-up areas at up to 60 km/h,
+    the 2025 Rosavtodor ODM recommends 1/3 m; ordinary roads use 3/9 m and
+    roads above 60 km/h use 4/12 m. Missing speed uses a context-based fallback.
     """
     st = style(country, lon)
     if str(country or "").strip().upper() not in POST_SOVIET_MARKING_COUNTRIES:
