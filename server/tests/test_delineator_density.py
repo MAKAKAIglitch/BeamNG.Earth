@@ -106,6 +106,19 @@ class DensityTest(unittest.TestCase):
             rows = self.markers(self.rows('RO', [self.road(str(i))]))
             self.assertEqual(bool(rows), furniture._h01(str(i), 'fr-j6-section-v2') < .35)
 
+    def test_post_soviet_roads_do_not_get_blanket_straight_delineator_rows(self):
+        countries = ('RU', 'BY', 'UA', 'MD', 'GE', 'AM', 'AZ', 'KZ', 'KG', 'TJ', 'TM', 'UZ')
+        for code in countries:
+            with self.subTest(country=code):
+                self.assertEqual(dp.policy(code).mode, 'bends')
+                self.assertEqual(dp.legacy_share(code), 0.)
+                self.assertEqual(self.markers(self.rows(code)), [])
+                self.assertTrue(dp.policy(code).source)
+        # The same countries still receive local posts at a sharp bend.
+        for code in ('RU', 'KZ', 'BY'):
+            with self.subTest(country=code, location='bend'):
+                self.assertTrue(self.markers(self.rows(code, self.curve(20.))))
+
     def test_excludes_urban_links_paths_service_and_unpaved(self):
         cases = ({'urban': True}, {'link': True}, {'cls': 'motorway'}, {'cls': 'service'},
                  {'cls': 'residential'}, {'cls': 'track'}, {'kind': 'gravel'}, {'width': 2.5})
