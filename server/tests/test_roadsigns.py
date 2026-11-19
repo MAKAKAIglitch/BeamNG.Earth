@@ -47,7 +47,9 @@ class Tables(unittest.TestCase):
         self.assertIsNone(roadsigns.system(None))
 
     def test_post_soviet_sign_profiles_are_explicit_and_restrained(self):
-        systems = roadsigns.tables()[1]["countries"]
+        config = roadsigns.tables()[1]
+        systems = config["countries"]
+        valid_rules = set(config["rules"])
         expected = ("RU", "BY", "KZ", "KG", "TJ", "TM", "UZ", "AM", "AZ", "GE", "MD")
         for code in expected:
             with self.subTest(country=code):
@@ -62,7 +64,7 @@ class Tables(unittest.TestCase):
                 self.assertIn("info.bus_stop", row["only"])
                 self.assertNotIn("info.living_street", row["only"])
                 self.assertFalse(row["verified"])
-                self.assertLessEqual(set(row["only"]), set(systems["rules"]), code)
+                self.assertLessEqual(set(row["only"]), valid_rules, code)
         for code in ("US", "CA", "XX", None):
             self.assertIsNone(roadsigns.system(code))
 
