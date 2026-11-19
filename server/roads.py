@@ -2027,8 +2027,7 @@ def _single_lane_fn(country, lon):
     narrower between its parking than the country's centre line takes (markings.Style.min_centre_m: as extras paints
     none): its stop lines across the whole of it."""
     import markings
-    st = markings.road_style(country, lon, kmh=getattr(spec, "kmh", None), urban=bool(spec[2]),
-                               motorway=spec[3] == "motorway")
+    st = markings.style(country, lon)
 
     def single(spec):
         if spec.oneway:
@@ -6319,10 +6318,11 @@ def extras(spec, pts, lon, left_hand=False, country=None, osm=None, ws=None, shi
     import markings
     from europewalks import LOW_EDGE_HEIGHT
     out = []
-    st = markings.style(country, lon)
+    w, kind, urban, cls = spec[:4]
+    st = markings.road_style(country, lon, kmh=getattr(spec, "kmh", None), urban=bool(urban),
+                             motorway=cls == "motorway")
     import roadmarkings
     profile = roadmarkings.for_road(spec, country, lon)
-    w, kind, urban, cls = spec[:4]
     wv = w if ws is None else np.asarray(ws, np.float64)     # (offsets: tapered; decisions: its width)
     if kind not in BUILT:
         return out
