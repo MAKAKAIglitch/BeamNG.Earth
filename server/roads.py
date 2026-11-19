@@ -46,7 +46,7 @@ import staging
 
 log = logging.getLogger("earthd.roads")
 
-VERSION = 1
+VERSION = 2
 TILE = 256.0            # m, tile side in the anchor frame
 SEND_M = float(os.environ.get("BNE_ROADS_SEND_M", "640"))     # tiles whose square comes this close to the player
                                                                 # (Euclidean, tiles_near: a disc) are sent
@@ -2027,7 +2027,8 @@ def _single_lane_fn(country, lon):
     narrower between its parking than the country's centre line takes (markings.Style.min_centre_m: as extras paints
     none): its stop lines across the whole of it."""
     import markings
-    st = markings.style(country, lon)
+    st = markings.road_style(country, lon, kmh=getattr(spec, "kmh", None), urban=bool(spec[2]),
+                               motorway=spec[3] == "motorway")
 
     def single(spec):
         if spec.oneway:
