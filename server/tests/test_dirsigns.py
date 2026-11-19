@@ -310,6 +310,18 @@ class StyleTest(unittest.TestCase):
         self.assertEqual(dirsigns.plate_for(st["DE"], "", "L 3016")[1], "l")
         self.assertIsNone(dirsigns.plate_for(st["DE"], "", "XYZ"))
 
+    def test_russian_direction_board_colors_and_route_numbers(self):
+        ru = dirsigns.styles()["countries"]["RU"]
+        self.assertEqual(ru["board"]["freeway"]["bg"], [0, 110, 60])
+        self.assertEqual(ru["board"]["road"]["bg"], [0, 85, 165])
+        self.assertEqual(ru["board"]["urban"]["bg"], [255, 255, 255])
+        for ref in ("М-4", "М4", "Р-22", "A-322", "Н-01"):
+            self.assertEqual(dirsigns.plate_for(ru, "", ref)[1], "r", ref)
+        self.assertEqual(dirsigns.plate_for(ru, "ru:federal", "М-4")[1], "r")
+        self.assertEqual(dirsigns.plate_for(ru, "e-road", "E 30")[1], "e")
+        self.assertIsNone(dirsigns.plate_for(ru, "", "XYZ"))
+        self.assertFalse(ru["verified"], "route-network details remain a provisional mapping")
+
     def test_parse_routes(self):
         self.assertEqual(dirsigns.parse_routes("ua:international|М-07|0.19|1.0;e-road|E 373|0.0|1.0"),
                          [("ua:international", "М-07", 0.19, 1.0), ("e-road", "E 373", 0.0, 1.0)])
