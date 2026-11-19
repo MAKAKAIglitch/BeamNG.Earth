@@ -8,7 +8,7 @@ Germany's widespread deployment. France keeps its existing sparse J6 trial.
 """
 from dataclasses import dataclass
 
-VERSION = 'delineator-deployment-v4'
+VERSION = 'delineator-deployment-v5-cis-bend-only'
 MAIN = frozenset(('primary', 'secondary'))
 REGIONAL = MAIN | {'tertiary'}
 RURAL = REGIONAL | {'unclassified'}
@@ -66,6 +66,17 @@ PROFILES = {
     **{c: Policy(mode='bends', classes=RURAL, source='GB analogy', evidence='provisional')
        for c in ('GG', 'GI', 'IM', 'JE')},
     'LI': Policy(source='CH analogy', evidence='provisional'),
+    # Russia: GOST 33151-2014 §4.2.4 locates posts on bends by curve radius;
+    # straight-road deployment depends on embankment/traffic criteria absent from OSM.
+    'RU': Policy(mode='bends', classes=RURAL, source='GOST 33151-2014 §4.2.4',
+                 evidence='bend-only: straight-road conditions are not mapped'),
+    # Kazakhstan: ST RK 1412-2017 governs guide devices; use mapped bends only,
+    # not an invented continuous row along every regional road.
+    'KZ': Policy(mode='bends', classes=RURAL, source='ST RK 1412-2017 §5.3',
+                 evidence='bend-only: site-specific installation cannot be inferred from OSM'),
+    **{c: Policy(mode='bends', classes=RURAL, source='provisional regional profile',
+                 evidence='provisional; bend-only, no straight-run prevalence assumed')
+       for c in ('BY', 'UA', 'MD', 'GE', 'AM', 'AZ', 'KG', 'TJ', 'TM', 'UZ')},
 }
 
 
