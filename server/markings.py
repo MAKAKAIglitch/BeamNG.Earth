@@ -71,10 +71,11 @@ _WHITE = Style(centre="line_white", w=0.12, w_motorway=0.15, edge=0.15, edge_mot
 # longitudinal markings and 1:3 broken-line families, but national standards are not
 # interchangeable. Keep this profile deliberately conservative until each country's
 # exact dimensions and exceptions have been checked against its own current standard.
-# Rural high-speed roads use the 4 m / 12 m option; urban roads use the 3 m / 9 m option.
+# The 2025 Rosavtodor ODM recommends 1/3 m inside built-up areas at <=60 km/h;
+    # ordinary roads select 3/9 m and high-speed roads 4/12 m.
 _CIS = Style(centre="line_white", w=0.10, w_motorway=0.15, edge=0.10, edge_motorway=0.20,
-             centre_rural=(4.0, 12.0), centre_urban=(3.0, 9.0),
-             lane_rural=(4.0, 12.0), lane_urban=(3.0, 9.0), lane_motorway=(4.0, 12.0),
+             centre_rural=(4.0, 12.0), centre_urban=(1.0, 3.0),
+             lane_rural=(4.0, 12.0), lane_urban=(1.0, 3.0), lane_motorway=(4.0, 12.0),
              left_edge=None, double_centre_urban=False, double_gap=0.12, min_centre_m=5.5)
 
 # CIS members and neighbouring post-Soviet countries represented by the first-pass
@@ -119,9 +120,11 @@ def road_style(country=None, lon=None, kmh=None, urban=False, motorway=False):
     if str(country or "").strip().upper() not in POST_SOVIET_MARKING_COUNTRIES:
         return st
     if kmh is None:
-        pattern = (4.0, 12.0) if motorway and not urban else (3.0, 9.0)
+        pattern = (1.0, 3.0) if urban else ((4.0, 12.0) if motorway else (3.0, 9.0))
+    elif float(kmh) > 60.0:
+        pattern = (4.0, 12.0)
     else:
-        pattern = (4.0, 12.0) if float(kmh) > 60.0 else (3.0, 9.0)
+        pattern = (1.0, 3.0) if urban else (3.0, 9.0)
     return st._replace(centre_rural=pattern, centre_urban=pattern,
                        lane_rural=pattern, lane_urban=pattern, lane_motorway=pattern)
 
