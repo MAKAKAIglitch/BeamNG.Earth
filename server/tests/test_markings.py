@@ -21,6 +21,30 @@ class StyleTest(unittest.TestCase):
         self.assertEqual(markings.style(None, 10.0).centre, "line_white")
         self.assertEqual(markings.style("SE").centre_rural, (3.0, 9.0))
 
+    def test_cis_and_post_soviet_country_profiles(self):
+        expected = ("AM", "AZ", "BY", "GE", "KG", "KZ", "MD", "RU", "TJ", "TM", "UA", "UZ")
+        self.assertEqual(markings.POST_SOVIET_MARKING_COUNTRIES, expected)
+        for country in expected:
+            with self.subTest(country=country):
+                style = markings.style(country)
+                self.assertEqual(style.centre, "line_white")
+                self.assertEqual(style.w, 0.10)
+                self.assertEqual(style.w_motorway, 0.15)
+                self.assertEqual(style.edge, 0.10)
+                self.assertEqual(style.edge_motorway, 0.20)
+                self.assertEqual(style.centre_rural, (4.0, 12.0))
+                self.assertEqual(style.centre_urban, (3.0, 9.0))
+                self.assertEqual(style.lane_rural, (4.0, 12.0))
+                self.assertEqual(style.lane_urban, (3.0, 9.0))
+                self.assertEqual(style.lane_motorway, (4.0, 12.0))
+                self.assertIsNone(style.left_edge)
+                self.assertFalse(style.double_centre_urban)
+
+    def test_existing_non_cis_profiles_are_not_replaced(self):
+        self.assertEqual(markings.style("DE").centre_rural, (6.0, 12.0))
+        self.assertEqual(markings.style("US").centre, "line_yellow")
+        self.assertEqual(markings.style("GB").lane_urban, (1.0, 5.0))
+
 
 class DashTest(unittest.TestCase):
     def test_dashes_follow_the_line_and_its_phase(self):
