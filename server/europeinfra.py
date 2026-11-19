@@ -119,6 +119,7 @@ KITS = {
     'KZ': Kit('white_red', 'red_black', ('concrete_three', 'wood_a'), 'plain'),
     'TJ': Kit('white_red', 'red_black', ('concrete_three',), 'plain'),
     'TM': Kit('white_red', 'red_black', ('concrete_three',), 'plain'),
+    'UZ': Kit('white_red', 'red_black', ('concrete_three', 'wood_a'), 'plain'),
 }
 COUNTRIES = frozenset(KITS)
 LEFT_HAND = frozenset('GB IE CY MT IM JE GG'.split())
