@@ -67,11 +67,29 @@ _AU = Style(centre="line_white", w=0.10, w_motorway=0.15, edge=0.12, edge_motorw
 _WHITE = Style(centre="line_white", w=0.12, w_motorway=0.15, edge=0.15, edge_motorway=0.20,
                centre_rural=(6.0, 12.0), centre_urban=(3.0, 6.0), lane_rural=(3.0, 9.0), lane_urban=(3.0, 9.0),
                lane_motorway=(3.0, 9.0), left_edge=None, double_centre_urban=False, double_gap=0.12, min_centre_m=5.5)
+# Initial CIS / post-Soviet visual baseline. The regional rule sets share white permanent
+# longitudinal markings and 1:3 broken-line families, but national standards are not
+# interchangeable. Keep this profile deliberately conservative until each country's
+# exact dimensions and exceptions have been checked against its own current standard.
+# Rural high-speed roads use the 4 m / 12 m option; urban roads use the 3 m / 9 m option.
+_CIS = Style(centre="line_white", w=0.10, w_motorway=0.15, edge=0.10, edge_motorway=0.20,
+             centre_rural=(4.0, 12.0), centre_urban=(3.0, 9.0),
+             lane_rural=(4.0, 12.0), lane_urban=(3.0, 9.0), lane_motorway=(4.0, 12.0),
+             left_edge=None, double_centre_urban=False, double_gap=0.12, min_centre_m=5.5)
+
+# CIS members and neighbouring post-Soviet countries represented by the first-pass
+# shared appearance. Entries remain provisional until locally sourced profiles replace
+# this family baseline.
+POST_SOVIET_MARKING_COUNTRIES = (
+    "AM", "AZ", "BY", "GE", "KG", "KZ", "MD", "RU", "TJ", "TM", "UA", "UZ",
+)
+
 _YELLOW = _WHITE._replace(centre="line_yellow")
 
 STYLES = {"US": _US, "CA": _CA, "GB": _GB, "IE": _GB, "IM": _GB, "JE": _GB, "GG": _GB, "DE": _DE, "AT": _DE,
           "CH": _DE, "LI": _DE, "LU": _DE, "FR": _FR, "MC": _FR, "BE": _FR, "NL": _NL, "JP": _JP, "AU": _AU, "NZ": _AU,
           "SE": _SE}
+STYLES.update({country: _CIS for country in POST_SOVIET_MARKING_COUNTRIES})
 # where centre lines are yellow (outside the US and Canada): the Americas, Norway, Finland, South Korea, China, Taiwan,
 # Thailand (research table 4.4)
 YELLOW_CENTRE = {"MX", "GT", "BZ", "HN", "SV", "NI", "CR", "PA", "CU", "DO", "HT", "PR", "JM", "BS", "TT", "CO", "VE",
