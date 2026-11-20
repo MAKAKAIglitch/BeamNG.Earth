@@ -38,8 +38,10 @@ class LocalizeTest(unittest.TestCase):
         self.assertLess(share("DE"), 0.25)
         self.assertEqual(share("CH"), 0.0)
         self.assertGreater(share("UA"), 0.4)
-        for code in ("RU",):
-            self.assertGreater(share(code), 0.4, code)
+        self.assertEqual(citylamps.CONCRETE_SHARE.get("RU"), 0.8)
+        self.assertNotIn("BY", citylamps.CONCRETE_SHARE)
+        self.assertNotIn("KZ", citylamps.CONCRETE_SHARE)
+        self.assertGreater(share("RU"), 0.4)
 
     def test_the_lens_and_the_collider_follow_the_new_groups(self):
         for g in citylamps.GROUPS:
