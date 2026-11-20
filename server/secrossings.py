@@ -132,7 +132,8 @@ def nodes(frame, infra_list, country=None):
 
     def lit(z):
         return any(math.hypot(z[0] - q[0], z[1] - q[1]) < SIGNALS_NEAR_M for q in signals)
-    zebras = [z for z in zebras if not lit(z)]
+    if str(country or "").upper() not in {"AM", "AZ", "BY", "GE", "KG", "KZ", "MD", "RU", "TJ", "TM", "UA", "UZ"}:
+        zebras = [z for z in zebras if not lit(z)]
     de = [(x, y, 0 if w and lit((x, y)) else w) for x, y, w in de]
     return {"crossings": crossings, "zebras": zebras, "de_crossings": de, "islands": refuges,
             "stop_lines": np.array(lines, np.float64).reshape(-1, 2),
