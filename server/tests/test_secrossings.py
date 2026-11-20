@@ -149,9 +149,11 @@ class NodesTest(unittest.TestCase):
         got = secrossings.nodes(Frame(), [Infra([
             ("crossing", (1.0, 2.0), {}),
             ("crossing", (3.0, 4.0), {"crossing": "uncontrolled"}),
-            ("crossing", (5.0, 6.0), {"crossing": "unmarked"})])], country="RU")
-        self.assertEqual([row[2] for row in got["crossings"]], [0, secrossings.M15, 0])
-        self.assertEqual(got["zebras"], [(30.0, 40.0)])
+            ("crossing", (5.0, 6.0), {"crossing": "unmarked"}),
+            ("crossing", (7.0, 8.0), {"crossing": "traffic_signals", "crossing:markings": "zebra"})])],
+            country="RU")
+        self.assertEqual([row[2] for row in got["crossings"]], [0, secrossings.M15, 0, secrossings.M15])
+        self.assertEqual(got["zebras"], [(30.0, 40.0), (70.0, 80.0)])
 
     def test_a_node_in_two_cells_comes_once(self):
         cell = Infra([("crossing", (1.0, 2.0), {})])
