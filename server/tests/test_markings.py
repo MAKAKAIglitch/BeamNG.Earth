@@ -40,7 +40,7 @@ class StyleTest(unittest.TestCase):
                 self.assertIsNone(style.left_edge)
                 self.assertFalse(style.double_centre_urban)
 
-    def test_existing_non_cis_profiles_are_not_replaced(self):
+    def test_existing_non_russian_profiles_are_not_replaced(self):
         self.assertEqual(markings.style("DE").centre_rural, (6.0, 12.0))
         self.assertEqual(markings.style("US").centre, "line_yellow")
         self.assertEqual(markings.style("GB").lane_urban, (1.0, 5.0))
