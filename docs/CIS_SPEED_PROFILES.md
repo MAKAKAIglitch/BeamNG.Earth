@@ -13,7 +13,7 @@ The order of precedence is:
 |---|---:|---:|---:|---|
 | Armenia (AM) | 60 | 90 | 110 | Residential/courtyard areas: 20 |
 | Azerbaijan (AZ) | 60 | 90 | 110 | Residential/courtyard areas: 20; local signed urban exceptions can be higher |
-| Belarus (BY) | 60 | 90 | 120 | Law also allows 120 on roads for automobiles; Layercake has no `motorroad` column, so only `highway=motorway` gets that default |
+| Belarus (BY) | 60 | 90 | 120 | Current law allows 120 on motorways and roads for automobiles; `BY:motorway` OSM symbolic value remains 110 |
 | Georgia (GE) | 60 | 90 | 110 | Residential areas: 20 |
 | Kyrgyzstan (KG) | 60 | 90 | 110 | Residential areas: 20 |
 | Kazakhstan (KZ) | 60 | 100 | up to 140 | Divided carriageway: 110; motorway cap depends on the applicable sign; residential areas: 20 |
@@ -29,13 +29,15 @@ The order of precedence is:
 
 The symbolic resolver recognises only suffixes explicitly present in the relevant country profile: `urban`, `rural`, `motorway`, `trunk`, and `living_street`. It also accepts the historical/transposed Russian spelling `RU:rual` as an alias for `RU:rural`.
 
-**Source limitation:** the current [Layercake Highways schema](https://layercake.openstreetmap.us/layers/highways/) exposes `maxspeed` and `motor_vehicle`, but not `motorroad`. The implementation therefore assigns Belarus's 120 km/h default to `highway=motorway`; roads for automobiles can only get 120 when their numeric OSM `maxspeed` is present. Other Belarusian `trunk` roads default to 90.
+**Belarus has two distinct values:** OSM's documented symbolic `BY:motorway` is 110, while the current traffic rules allow a passenger car 120 on a motorway or a road for automobiles. The code preserves both: an explicit `maxspeed=BY:motorway` resolves to 110; an untagged `highway=motorway` default is 120. Ordinary `trunk` roads remain 90.
+
+**Source limitation:** the current [Layercake Highways schema](https://layercake.openstreetmap.us/layers/highways/) exposes `maxspeed` and `motor_vehicle`, but not `motorroad`. It therefore cannot infer the separate "road for automobiles" designation from that tag; those roads need an explicit numeric OSM `maxspeed` to receive the 120 limit.
 
 ## Sources and qualifications
 
 - Armenia: [Decision 955-N speed rules](https://ert.am/en/traffic-rules/speed) — passenger-car limits 60 / 90 / 110.
 - Azerbaijan: [Ministry of Internal Affairs, Road Traffic Law](https://mia.gov.az/ru/legislation/1/view/9/) — 60 in settlements, 90 on other roads, 110 on motorways.
-- Belarus: [Traffic Rules, paragraph 89](https://legaris.by/legal-base/traffic-rules-of-the-republic-of-belarus/) — 120 on motorways and roads for motor vehicles, 90 on other roads; the cited text reflects amendments to Presidential Decree No. 145.
+- Belarus: [Traffic Rules, paragraph 89](https://legaris.by/legal-base/traffic-rules-of-the-republic-of-belarus/) — 120 on motorways and roads for automobiles, 90 on other roads; paragraph 89.1 reflects Presidential Decree No. 145 of 18 April 2022. [OSM's implicit-tag table](https://wiki.openstreetmap.org/wiki/Key:maxspeed) separately lists `BY:motorway=110`.
 - Georgia: [Law on Road Traffic](https://pdd.ge/en/documents/road-traffic-law) — current consolidated text dated 25 June 2026; category B limits 60 / 90 / 110.
 - Kazakhstan: [Official legal text of the 2023 Traffic Rules](https://law.gov.kz/api/documents/183572/rus/download/pdf) — 60 in settlements; outside, 100 on ordinary roads, 110 on divided roads and up to 140 on motorways when set by the applicable sign.
 - Kyrgyzstan: [GUOBDD, Traffic Rules, section 10](https://guobdd.kg/trafficregulationsitem/10) — 60 in settlements, 90 on ordinary roads and 110 on motorways for passenger cars.
