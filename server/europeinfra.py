@@ -8,7 +8,7 @@ No profile changes junction priorities, speed limits, or STOP placement.
 """
 from dataclasses import dataclass,replace
 
-VERSION = 'europe-infrastructure-v6-central-asia-road-kit'
+VERSION = 'europe-infrastructure-v6-russia-only'
 
 
 @dataclass(frozen=True)
@@ -114,12 +114,6 @@ KITS = {
     'GE': Kit('white_red', 'red_black', ('concrete_three', 'wood_side'), 'mixed'),
     'AM': Kit('white_red', 'red_black', ('concrete_three',), 'mixed'),
     'AZ': Kit('white_red', 'red_black', ('concrete_three',), 'blue'),
-    # Central Asia: shared post-Soviet roadside equipment families; representative, not a national inventory.
-    'KG': Kit('white_red', 'red_black', ('concrete_three', 'wood_a'), 'plain'),
-    'KZ': Kit('white_red', 'red_black', ('concrete_three', 'wood_a'), 'plain'),
-    'TJ': Kit('white_red', 'red_black', ('concrete_three',), 'plain'),
-    'TM': Kit('white_red', 'red_black', ('concrete_three',), 'plain'),
-    'UZ': Kit('white_red', 'red_black', ('concrete_three', 'wood_a'), 'plain'),
 }
 COUNTRIES = frozenset(KITS)
 LEFT_HAND = frozenset('GB IE CY MT IM JE GG'.split())
