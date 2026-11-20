@@ -122,12 +122,13 @@ _MD = Style(centre="line_white", w=0.15, w_motorway=0.25, edge=0.15, edge_motorw
 
 # Ukraine: DSTU 2587:2021. Line widths depend on road category (0.10 / 0.15 / 0.20 m);
 # ordinary 1.5 dash/gap ratio 1:2 with speed bands; 1.3 is the double solid centre marking.
-_UA = Style(centre="line_white", w=0.12, w_motorway=0.20, edge=0.12, edge_motorway=0.20,
+_UA = Style(centre="line_white", w=0.15, w_motorway=0.20, edge=0.15, edge_motorway=0.20,
             centre_rural=(3.0, 6.0), centre_urban=(2.0, 4.0),
             lane_rural=(3.0, 6.0), lane_urban=(2.0, 4.0), lane_motorway=(4.0, 8.0),
             left_edge=None, double_centre_urban=False, double_gap=0.10, min_centre_m=5.5,
             double_centre=True, stop_line_w=0.40, yield_h=0.70, yield_base=0.50, yield_gap=0.25,
-            crosswalk_min=4.0, crosswalk_fast=4.0, crosswalk_urban_min=2.5, crosswalk_fast_kmh=60.0)
+            crosswalk_min=4.0, crosswalk_fast=4.0, crosswalk_urban_min=2.5, crosswalk_fast_kmh=60.0,
+            w_urban=0.10)
 
 # Russia: GOST R 51256-2018 with the speed-sensitive dash family used by the road renderer.
 _RU = _RU._replace(double_centre=True, stop_line_w=0.40, yield_h=0.70, yield_base=0.50,
