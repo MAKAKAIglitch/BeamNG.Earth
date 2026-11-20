@@ -78,15 +78,36 @@ _RU = Style(centre="line_white", w=0.10, w_motorway=0.15, edge=0.10, edge_motorw
              lane_rural=(4.0, 12.0), lane_urban=(1.0, 3.0), lane_motorway=(4.0, 12.0),
              left_edge=None, double_centre_urban=False, double_gap=0.12, min_centre_m=5.5)
 
-# This experimental overlay is enabled for Russia only.
+# CIS country profiles. GOST 32953-2014 was adopted by AM, BY, KZ, KG, RU and TJ.
+# Keep separate Style instances for every country so national parameters can evolve independently.
+# For countries without a verified, accessible national dimensional standard, retain the conservative
+# white-marking baseline rather than inventing widths or dash lengths.
 RUSSIAN_MARKING_COUNTRIES = ("RU",)
+CIS_MARKING_COUNTRIES = ("AM", "AZ", "BY", "GE", "KG", "KZ", "MD", "RU", "TJ", "TM", "UA", "UZ")
+_CIS_GOST_32953 = frozenset({"AM", "BY", "KG", "KZ", "RU", "TJ"})
+
+_AM = _RU._replace()
+_AZ = _WHITE._replace()
+_BY = _RU._replace()
+_GE = _WHITE._replace()
+_KG = _RU._replace()
+_KZ = _RU._replace()
+_MD = _WHITE._replace()
+_TJ = _RU._replace()
+_TM = _WHITE._replace()
+_UA = _WHITE._replace()
+_UZ = _WHITE._replace()
+CIS_STYLES = {
+    "AM": _AM, "AZ": _AZ, "BY": _BY, "GE": _GE, "KG": _KG, "KZ": _KZ,
+    "MD": _MD, "RU": _RU, "TJ": _TJ, "TM": _TM, "UA": _UA, "UZ": _UZ,
+}
 
 _YELLOW = _WHITE._replace(centre="line_yellow")
 
 STYLES = {"US": _US, "CA": _CA, "GB": _GB, "IE": _GB, "IM": _GB, "JE": _GB, "GG": _GB, "DE": _DE, "AT": _DE,
           "CH": _DE, "LI": _DE, "LU": _DE, "FR": _FR, "MC": _FR, "BE": _FR, "NL": _NL, "JP": _JP, "AU": _AU, "NZ": _AU,
           "SE": _SE}
-STYLES.update({country: _RU for country in RUSSIAN_MARKING_COUNTRIES})
+STYLES.update(CIS_STYLES)
 # where centre lines are yellow (outside the US and Canada): the Americas, Norway, Finland, South Korea, China, Taiwan,
 # Thailand (research table 4.4)
 YELLOW_CENTRE = {"MX", "GT", "BZ", "HN", "SV", "NI", "CR", "PA", "CU", "DO", "HT", "PR", "JM", "BS", "TT", "CO", "VE",
