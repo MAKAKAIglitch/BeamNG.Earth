@@ -49,22 +49,28 @@ end
 -- one: in game 2026-10-28, Thuir's sign showed the engine's orange "no texture") takes the new file and reloads, as
 -- satmat.ref's.
 local function makeMaterial(name, texture)
-  local key = texture or false   -- (none: a white plate, made once too)
-  if mats[name] == key then return end
-  local seen = mats[name] ~= nil
-  mats[name] = key
-  local ok = type(texture) == 'string' and FS:fileExists(texture)
-  if not ok then log('W', 'beamngEarth', 'town sign texture missing: ' .. tostring(texture)) end
+  -- Cache the file's current availability as well as its path: a session can
+  -- remove an old DDS while the Material object remains in the scene.
+  local ok = type(texture) == 'string' and texture ~= '' and FS:fileExists(texture)
+  local key = ok and texture or false
   local m = scenetree.findObject(name)
+  if mats[name] == key and m then return end
+  mats[name] = key
+  if texture ~= nil and not ok then
+    log('W', 'beamngEarth', 'town sign texture missing: ' .. tostring(texture))
+  end
   if m then
+    -- An existing Material may still point at a DDS from the previous server
+    -- session. Replace or clear that reference, then reload it in either case.
     if ok then
       m:setField('colorMap', 0, texture)
       m:setField('diffuseColor', 0, M.FIELDS[1][2])
-      if seen then
-        pcall(function() m:flush() end)
-        pcall(function() m:reload() end)
-      end
+    else
+      m:setField('colorMap', 0, '')
+      m:setField('diffuseColor', 0, M.FALLBACK_COLOR)
     end
+    pcall(function() m:flush() end)
+    pcall(function() m:reload() end)
     return
   end
   m = createObject('Material')

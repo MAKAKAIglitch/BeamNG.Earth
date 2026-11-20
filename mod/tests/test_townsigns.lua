@@ -5,7 +5,7 @@
 -- skipped.
 local dir = (arg[0]:match('^(.*)[/\\]') or '.')
 local T = dofile(dir .. '/testlib.lua')
-dofile(dir .. '/stubs.lua')
+local S = dofile(dir .. '/stubs.lua')
 local townsigns = require('beamngEarth/townsigns')
 
 local exists = { ['/temp/beamngEarth/s/townin_a1.png'] = true }
@@ -42,6 +42,33 @@ townsigns.register(trees, { townin_a1 = { shape = '/temp/beamngEarth/t/townin_a1
                                           texture = '/temp/beamngEarth/t/townin_a1.png', material = 'bne_townin_a1' } })
 T.check(townsigns.count == before, 'still one Material')
 T.check(m.fields.colorMap == '/temp/beamngEarth/t/townin_a1.png', 'pointed at the new session\'s texture')
+
+-- If the old session's DDS disappears, an existing Material must stop referencing it.
+local current = { shape = '/temp/beamngEarth/t/townin_a1.dae',
+                  texture = '/temp/beamngEarth/t/townin_a1.png', material = 'bne_townin_a1' }
+local flushBefore = S.calls.flush_Material or 0
+local reloadBefore = S.calls.reload_Material or 0
+exists['/temp/beamngEarth/t/townin_a1.png'] = nil
+townsigns.register(trees, { townin_a1 = current })
+T.check(m.fields.colorMap == '', 'a missing replacement clears the stale colorMap')
+T.check(m.fields.diffuseColor == townsigns.FALLBACK_COLOR, 'a missing replacement uses the safe blank-face fallback')
+T.check((S.calls.flush_Material or 0) == flushBefore + 1 and
+        (S.calls.reload_Material or 0) == reloadBefore + 1, 'the existing Material is refreshed after its texture disappears')
+
+-- The same path becoming available again must recover instead of staying cached as missing.
+exists['/temp/beamngEarth/t/townin_a1.png'] = true
+townsigns.register(trees, { townin_a1 = current })
+T.check(m.fields.colorMap == current.texture, 'a reappearing texture is attached again')
+T.check(m.fields.diffuseColor == townsigns.FIELDS[1][2], 'the normal diffuse colour is restored')
+
+-- An extension reload clears Lua's cache but leaves the scene Material alive.
+townsigns.reset()
+exists['/temp/beamngEarth/u/townin_a1.png'] = true
+local reloadAfterReset = S.calls.reload_Material or 0
+townsigns.register(trees, { townin_a1 = { shape = '/temp/beamngEarth/u/townin_a1.dae',
+                                          texture = '/temp/beamngEarth/u/townin_a1.png', material = 'bne_townin_a1' } })
+T.check(m.fields.colorMap == '/temp/beamngEarth/u/townin_a1.png', 'an extension reload adopts the new session texture')
+T.check((S.calls.reload_Material or 0) == reloadAfterReset + 1, 'an adopted scene Material is reloaded')
 
 T.check(townsigns.body('townin_a1') == townsigns.BODY, 'an entry face gets the shared body')
 T.check(townsigns.body('townout_a1') == nil, 'an exit face none: it is on the entry sign\'s back')
