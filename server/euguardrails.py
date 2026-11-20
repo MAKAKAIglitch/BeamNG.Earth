@@ -11,7 +11,7 @@ import dmath
 import dnp
 import geotiles
 
-VERSION='eu-road-details-2026-11-v6-russia-only'
+VERSION='eu-road-details-2026-11-v5-motorway-verges'
 VERGE_CONTEXT_M = 32.0
 PROFILES={c:('a','red') for c in
           'AD AL AM AT AX AZ BA BE BG BY CH CY CZ DE DK EE ES FI FO FR GB GE GG GI GR HR HU IE IM IS IT JE LI LT LU LV MC MD ME MK MT NL NO PL PT RO RS RU SE SI SK SM TR UA VA XK'.split()}
