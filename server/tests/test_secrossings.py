@@ -54,8 +54,7 @@ class PaintTest(unittest.TestCase):
 
 
 class WantedTest(unittest.TestCase):
-    """Who reads the map's crossing, stop and give-way nodes: Sweden always, Germany with its junction signs on (de: the
-    setting and the tile's or the graph's centre inside Germany)."""
+    """Who reads crossing, stop-line and priority nodes: Sweden, supported CIS profiles, or Germany when enabled."""
     def test_sweden(self):
         self.assertTrue(secrossings.wanted("SE"))
         self.assertTrue(secrossings.wanted("se", de=False))
