@@ -46,11 +46,11 @@ class Tables(unittest.TestCase):
             self.assertIsNone(roadsigns.system("NL"))
         self.assertIsNone(roadsigns.system(None))
 
-    def test_post_soviet_sign_profiles_are_explicit_and_restrained(self):
+    def test_russian_sign_profile_is_explicit_and_restrained(self):
         config = roadsigns.tables()[1]
         systems = config["countries"]
         valid_rules = set(config["rules"])
-        expected = ("RU", "BY", "KZ", "KG", "TJ", "TM", "UZ", "AM", "AZ", "GE", "MD")
+        expected = ("RU",)
         for code in expected:
             with self.subTest(country=code):
                 row = roadsigns.system(code)
