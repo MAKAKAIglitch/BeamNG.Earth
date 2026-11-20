@@ -106,8 +106,8 @@ _KZ = Style(centre="line_white", w=0.12, w_motorway=0.15, edge=0.12, edge_motorw
             centre_rural=(2.0, 6.0), centre_urban=(1.0, 3.0),
             lane_rural=(2.0, 6.0), lane_urban=(1.0, 3.0), lane_motorway=(3.0, 9.0),
             left_edge=None, double_centre_urban=False, double_gap=0.12, min_centre_m=5.5,
-            double_centre=True, stop_line_w=0.40, yield_h=0.90, yield_base=0.50, yield_gap=0.50,
-            crosswalk_min=2.5, crosswalk_fast=4.0, crosswalk_fast_kmh=60.0)
+            double_centre=True, stop_line_w=0.40, yield_h=0.90, yield_base=0.50, yield_gap=0.30,
+            crosswalk_min=2.5, crosswalk_fast=4.0, crosswalk_urban_min=2.5, crosswalk_fast_kmh=60.0)
 
 # Moldova: CP D.02.33:2024 (effective 2024-03-22), Appendix R. It specifies 0.15 m narrow lines,
 # 0.25 m wide motorway markings, a 0.15 m / 0.10 m double line, 0.40 m stop lines,
@@ -192,8 +192,9 @@ def road_style(country=None, lon=None, kmh=None, urban=False, motorway=False):
             pattern = (4.0, 12.0) if speed > 60.0 else (3.0, 9.0)
     else:
         return st
+    lane_motorway = (3.0, 6.0) if c == "MD" else pattern
     return st._replace(centre_rural=pattern, centre_urban=pattern,
-                       lane_rural=pattern, lane_urban=pattern, lane_motorway=pattern)
+                       lane_rural=pattern, lane_urban=pattern, lane_motorway=lane_motorway)
 
 
 def dashes(pts, pattern, phase=0.0):
