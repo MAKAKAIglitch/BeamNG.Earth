@@ -2372,7 +2372,7 @@ class Server:
             log.debug("navgraph decks: %s: %s", type(e).__name__, e)
         # (Germany's mapped nodes too: its junction signs on, the graph's window in Germany)
         de_nodes = designsmod.reads_here(designsmod.enabled(self.dej_on), anchor.frame, (x - w, y - w, x + w, y + w))
-        nodes = secrossings.read(self.mapdata, anchor.frame, keys) \
+        nodes = secrossings.read(self.mapdata, anchor.frame, keys, country=self.country(anchor)) \
             if secrossings.wanted(self.country(anchor), de_nodes) else None
         # (and the cells' road_routes for the German junctions' ref ranks, as blockworker.navgraph reads them)
         de_routes = blockworker._de_routes(self.mapdata, keys) if de_nodes else ()
@@ -3241,7 +3241,7 @@ class Server:
         nkeys = roadsmod.cells_of_tile(anchor.frame, tx, ty, blockworker.SIGNALS_MARGIN_M)
         # (Germany's mapped nodes too: its junction signs on, the junctions it decides reach into Germany)
         de_nodes = designsmod.reads_here(designsmod.enabled(self.dej_on), anchor.frame, designsmod.tile_reach(box))
-        sign_nodes = secrossings.read(self.mapdata, anchor.frame, nkeys) \
+        sign_nodes = secrossings.read(self.mapdata, anchor.frame, nkeys, country=self.country(anchor)) \
             if secrossings.wanted(self.country(anchor), de_nodes) else None
         clearance = [] if self.buildings else None     # (build_tile's RoadClearance, PR #629: the powerlines' too)
         roadside_jobs = []
