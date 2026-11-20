@@ -11696,7 +11696,8 @@ def build_tile(frame, tx, ty, cells, elev, urban_fn=None, walks=None, bridges=No
         st = _cis_marks.style(line_country, roads[0][3] if roads else None)
         if nodes is not None:
             crosswalks, squares, cw_ramps = _cx.place(
-                roads, nodes, crosswalk_min=st.crosswalk_min, crosswalk_fast=st.crosswalk_fast)
+                roads, nodes, crosswalk_min=st.crosswalk_min, crosswalk_fast=st.crosswalk_fast,
+                crosswalk_urban_min=st.crosswalk_urban_min, crosswalk_fast_kmh=st.crosswalk_fast_kmh)
             teeth.extend(squares)
             for key, rows in cw_ramps.items():
                 jramps.setdefault(key, []).extend(rows)
@@ -11708,7 +11709,8 @@ def build_tile(frame, tx, ty, cells, elev, urban_fn=None, walks=None, bridges=No
                 jlines.setdefault(fid_, []).extend(cuts_)
             m14, gone = _cis_marks.give_way_lines(
                 furniture.give_way_arms(roads, signals, country, priority), crosswalks, left_hand,
-                height=st.yield_h, base=st.yield_base, gap=st.yield_gap)
+                height=st.yield_h, base=st.yield_base, gap=st.yield_gap,
+                dash=st.yield_dash, line_width=st.yield_line_w)
             teeth.extend(m14)
             crosswalks = [cw for j, cw in enumerate(crosswalks) if j not in gone] + stops
     elif walks is not None and str(country or "").upper() != "SE":
