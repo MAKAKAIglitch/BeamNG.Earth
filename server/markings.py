@@ -23,9 +23,9 @@ import dnp
 Style = namedtuple("Style", "centre w w_motorway edge edge_motorway centre_rural centre_urban lane_rural lane_urban "
                             "lane_motorway left_edge double_centre_urban double_gap min_centre_m edge_classes ladder "
                             "edge_pattern warning w_urban double_centre stop_line_w yield_h yield_base yield_gap "
-                            "crosswalk_min crosswalk_fast crosswalk_urban_min crosswalk_fast_kmh yield_dash yield_line_w",
+                            "crosswalk_min crosswalk_fast crosswalk_urban_min crosswalk_fast_kmh yield_dash yield_line_w crosswalk_tl",
                    defaults=(None, False, None, None, None, False, 0.40, 0.70, 0.50, 0.50, 3.0, 4.0,
-                             None, 60.0, None, 0.40))
+                             None, 60.0, None, 0.40, 4.8))
 
 _US = Style(centre="line_yellow", w=0.12, w_motorway=0.15, edge=0.12, edge_motorway=0.15,
             centre_rural=(3.05, 9.14), centre_urban=(3.05, 9.14), lane_rural=(3.05, 9.14), lane_urban=(3.05, 9.14),
@@ -107,7 +107,8 @@ _KZ = Style(centre="line_white", w=0.12, w_motorway=0.15, edge=0.12, edge_motorw
             lane_rural=(2.0, 6.0), lane_urban=(1.0, 3.0), lane_motorway=(3.0, 9.0),
             left_edge=None, double_centre_urban=False, double_gap=0.12, min_centre_m=5.5,
             double_centre=True, stop_line_w=0.40, yield_h=0.90, yield_base=0.50, yield_gap=0.30,
-            crosswalk_min=2.5, crosswalk_fast=4.0, crosswalk_urban_min=2.5, crosswalk_fast_kmh=60.0)
+            crosswalk_min=2.5, crosswalk_fast=4.0, crosswalk_urban_min=2.5, crosswalk_fast_kmh=60.0,
+            crosswalk_tl=4.0)
 
 # Moldova: CP D.02.33:2024 (effective 2024-03-22), Appendix R. It specifies 0.15 m narrow lines,
 # 0.25 m wide motorway markings, a 0.15 m / 0.10 m double line, 0.40 m stop lines,
@@ -132,7 +133,8 @@ _UA = Style(centre="line_white", w=0.15, w_motorway=0.20, edge=0.15, edge_motorw
 
 # Russia: GOST R 51256-2018 with the speed-sensitive dash family used by the road renderer.
 _RU = _RU._replace(double_centre=True, stop_line_w=0.40, yield_h=0.70, yield_base=0.50,
-                   yield_gap=0.50, crosswalk_min=3.0, crosswalk_fast=4.0)
+                   yield_gap=0.50, crosswalk_min=4.0, crosswalk_fast=4.0, crosswalk_urban_min=4.0,
+                   crosswalk_tl=4.0)
 
 CIS_STYLES = {
     "AM": _AM, "AZ": _AZ, "BY": _BY, "GE": _GE, "KG": _KG, "KZ": _KZ,
