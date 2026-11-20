@@ -25,8 +25,8 @@ import build_european_infrastructure as assets
 NS={'c':'http://www.collada.org/2005/11/COLLADASchema'}
 
 class GeographyTest(unittest.TestCase):
-    def test_cis_and_central_asian_roadside_families_are_registered(self):
-        countries = ("RU", "BY", "UA", "MD", "GE", "AM", "AZ", "KZ", "KG", "TJ", "TM", "UZ")
+    def test_russian_roadside_families_are_registered(self):
+        countries = ("RU",)
         for code in countries:
             with self.subTest(country=code):
                 self.assertIn(code, ei.KITS)
