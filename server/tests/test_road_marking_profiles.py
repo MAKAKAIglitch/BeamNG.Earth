@@ -82,6 +82,17 @@ class ProfileTest(unittest.TestCase):
         self.assertTrue(lanes)
         self.assertEqual({look['tl'] for look in lanes}, {1.0})
 
+    def test_verified_cis_profiles_render_double_solid_centrelines(self):
+        four_lane = roads.Spec(14.0, 'paved', False, 'primary', False, lanes=4, kmh=70.0)
+        for country in ('RU', 'KZ', 'UA', 'MD'):
+            with self.subTest(country=country):
+                ex = roads.extras(four_lane, LINE, 37.0, country=country, defer_dashes=True)
+                centre = [(look, width) for look, width, _ in ex if look.get('kind') == 'centre']
+                self.assertEqual(len(centre), 2)
+        ex = roads.extras(four_lane, LINE, 27.0, country='BY', defer_dashes=True)
+        centre = [look for look, _, _ in ex if look.get('kind') == 'centre']
+        self.assertEqual(len(centre), 1, "unverified national profile keeps the conservative single-line fallback")
+
     def test_moldova_rural_edge_lines_are_dashed_but_urban_and_motorway_edges_are_solid(self):
         rural = roads.Spec(7.0, 'paved', False, 'primary', False, kmh=70.0)
         ex = roads.extras(rural, LINE, 29.0, country='MD', defer_dashes=True)
