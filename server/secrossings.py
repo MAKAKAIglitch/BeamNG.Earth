@@ -200,7 +200,8 @@ def place(roads, found, on=None, crosswalk_min=M15_L, crosswalk_fast=M15_FAST_L,
         for side in (1, -1):
             ramps.setdefault((fid, side), []).append((c.copy(), u, -M15_L / 2, M15_L / 2))
         fast = (spec.kmh or 0.0) > float(crosswalk_fast_kmh)
-        base_width = crosswalk_urban_min if spec.urban and crosswalk_urban_min is not None and not fast else crosswalk_min
+        local_street = spec.urban and spec.cls in {"residential", "living_street", "service", "unclassified"}
+        base_width = crosswalk_urban_min if local_street and crosswalk_urban_min is not None and not fast else crosswalk_min
         long_ = max(float(crosswalk_fast if fast else base_width), M15_L if crosswalk_urban_min is None else 0.0)
         band = M16_RIDE + 2 * M16_SIDE              # M16's: from the outer edge of one row to the other's
         at_m15 = -band / 2 if what == M15 | M16 else 0.0
