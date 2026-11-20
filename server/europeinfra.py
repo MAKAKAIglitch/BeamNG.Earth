@@ -8,7 +8,7 @@ No profile changes junction priorities, speed limits, or STOP placement.
 """
 from dataclasses import dataclass,replace
 
-VERSION = 'europe-infrastructure-v6-russia-only'
+VERSION = 'europe-infrastructure-v5-italian-albanian-delineators'
 
 
 @dataclass(frozen=True)
