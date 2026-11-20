@@ -114,7 +114,7 @@ class DensityTest(unittest.TestCase):
                 self.assertEqual(dp.legacy_share(code), 0.)
                 self.assertEqual(self.markers(self.rows(code)), [])
                 self.assertTrue(dp.policy(code).source)
-        # The same countries still receive local posts at a sharp bend.
+        # Russia still receives local posts at a sharp bend.
         for code in ('RU',):
             with self.subTest(country=code, location='bend'):
                 self.assertTrue(self.markers(self.rows(code, self.curve(20.))))
