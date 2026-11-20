@@ -23,7 +23,7 @@ class SymbolicTags(unittest.TestCase):
         self.assertEqual(maxspeedprofiles.resolve_tag("ru:rual"), 90)
 
     def test_country_specific_values_differ(self):
-        self.assertEqual(maxspeedprofiles.resolve_tag("BY:motorway"), 120)
+        self.assertEqual(maxspeedprofiles.resolve_tag("BY:motorway"), 110)
         self.assertEqual(maxspeedprofiles.resolve_tag("KZ:motorway"), 140)
         self.assertEqual(maxspeedprofiles.resolve_tag("UA:motorway"), 130)
         self.assertEqual(maxspeedprofiles.resolve_tag("UZ:rural"), 100)
@@ -67,6 +67,7 @@ class DefaultProfiles(unittest.TestCase):
         self.assertEqual(maxspeedprofiles.default_kmh("UZ", self.spec("living_street", urban=True)), 30)
         self.assertEqual(maxspeedprofiles.default_kmh("RU", self.spec("motorway")), 110)
         self.assertEqual(maxspeedprofiles.default_kmh("KZ", self.spec("motorway")), 140)        self.assertEqual(maxspeedprofiles.default_kmh("BY", self.spec("motorway")), 120)
+        self.assertEqual(maxspeedprofiles.resolve_tag("BY:motorway"), 110)
         self.assertEqual(maxspeedprofiles.default_kmh("BY", self.spec("trunk"), motorroad=True), 120)
         self.assertEqual(maxspeedprofiles.default_kmh("BY", self.spec("trunk"), motorroad=False), 90)
         self.assertEqual(maxspeedprofiles.default_kmh("RU", self.spec("living_street", urban=True)), 20)
