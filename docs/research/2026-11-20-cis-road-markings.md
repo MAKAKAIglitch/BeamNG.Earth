@@ -62,6 +62,7 @@ Reference:
 - Double solid line: two 0.15 m lines with a 0.10 m gap.
 - Ordinary broken line A: up to 60 km/h, representative 3/9 m; above 60 km/h, 4/12 m.
 - Urban/restricted-speed broken line B: representative 3/1 m up to 60 km/h and 9/3 m above 60 km/h.
+- Edge delineation marking M: 0.15 m wide, 1 m segments / 1 m gaps outside settlements; motorway wide edge marking is 0.25 m.
 - Stop line: 0.40 m.
 - Give-way line: 0.40 m wide, 0.80 m dashes and 0.40 m gaps; it may be preceded by a triangle.
 - Pedestrian crossing length: at least 3.0 m below 50 km/h and 4.0 m above 50 km/h.
