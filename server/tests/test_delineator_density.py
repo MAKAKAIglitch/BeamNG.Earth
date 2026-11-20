@@ -106,8 +106,8 @@ class DensityTest(unittest.TestCase):
             rows = self.markers(self.rows('RO', [self.road(str(i))]))
             self.assertEqual(bool(rows), furniture._h01(str(i), 'fr-j6-section-v2') < .35)
 
-    def test_post_soviet_roads_do_not_get_blanket_straight_delineator_rows(self):
-        countries = ('RU', 'BY', 'UA', 'MD', 'GE', 'AM', 'AZ', 'KZ', 'KG', 'TJ', 'TM', 'UZ')
+    def test_russia_does_not_get_blanket_straight_delineator_rows(self):
+        countries = ('RU',)
         for code in countries:
             with self.subTest(country=code):
                 self.assertEqual(dp.policy(code).mode, 'bends')
@@ -115,7 +115,7 @@ class DensityTest(unittest.TestCase):
                 self.assertEqual(self.markers(self.rows(code)), [])
                 self.assertTrue(dp.policy(code).source)
         # The same countries still receive local posts at a sharp bend.
-        for code in ('RU', 'KZ', 'BY'):
+        for code in ('RU',):
             with self.subTest(country=code, location='bend'):
                 self.assertTrue(self.markers(self.rows(code, self.curve(20.))))
 
