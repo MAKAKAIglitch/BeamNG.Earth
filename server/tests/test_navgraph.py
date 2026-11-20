@@ -33,6 +33,39 @@ def graph(lines, classes, connectors=(), oneway=(), speeds=(), subclass=(), cent
     return navgraph.build(FRAME, [f], flat, centre, window=window)
 
 
+class CisCountrySpeedTest(unittest.TestCase):
+    @staticmethod
+    def spec(kmh=None, cls="trunk", urban=False, oneway=False, lanes=None):
+        return SimpleNamespace(kmh=kmh, cls=cls, urban=urban, oneway=oneway, lanes=lanes, link=False)
+
+    def test_traffic_uses_each_cis_country_profile(self):
+        f = features([[(0, 0), (200, 0)]], ["trunk"])
+        expected = {"RU": 90, "BY": 120, "UA": 90, "KZ": 100, "KG": 90, "TJ": 90,
+                    "TM": 90, "UZ": 100, "MD": 90, "GE": 90, "AM": 90, "AZ": 90}
+        for country, kmh in expected.items():
+            with self.subTest(country=country):
+                got = navgraph.road_mph(f, 0, self.spec(), mph=False, country=country) * 1.609344
+                self.assertAlmostEqual(got, kmh, places=6)
+
+    def test_divided_trunk_profiles(self):
+        f = features([[(0, 0), (200, 0)]], ["trunk"])
+        divided = self.spec(oneway=True, lanes=2)
+        self.assertAlmostEqual(navgraph.road_mph(f, 0, divided, mph=False, country="KZ") * 1.609344, 110)
+        self.assertAlmostEqual(navgraph.road_mph(f, 0, divided, mph=False, country="UA") * 1.609344, 110)
+        self.assertAlmostEqual(navgraph.road_mph(f, 0, divided, mph=False, country="RU") * 1.609344, 90)
+
+    def test_mapped_numeric_limit_precedes_country_default(self):
+        f = features([[(0, 0), (200, 0)]], ["trunk"])
+        mapped = self.spec(kmh=75.0)
+        got = navgraph.road_mph(f, 0, mapped, mph=False, country="RU") * 1.609344
+        self.assertAlmostEqual(got, 75.0)
+
+    def test_non_cis_countries_keep_the_previous_fallback(self):
+        f = features([[(0, 0), (200, 0)]], ["trunk"])
+        got = navgraph.road_mph(f, 0, self.spec(), mph=False, country="US") * 1.609344
+        self.assertAlmostEqual(got, 100.0)
+
+
 class ShortIdsTest(unittest.TestCase):
     """navgraph.short_ids: one short stable name per node in the nodes, edges and signals (the game decodes the file at
     every rebuild; the long names were most of it), the same name in every graph."""
