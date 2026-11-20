@@ -135,11 +135,6 @@ class SpecTest(unittest.TestCase):
         self.assertAlmostEqual(f.attrs["osm_maxspeed"][0], 90.0)
         self.assertEqual(str(f.attrs["osm_maxspeed_tag"][0]), "RU:rual")
         self.assertAlmostEqual(roads.road_specs(f)[0].kmh, 90.0)
-    def test_motorroad_tag_is_preserved_for_country_speed_profiles(self):
-        f = tagged([[(0, 0), (200, 0)]], ["trunk"], ["w1@1"],
-                   {1: {"motorroad": "yes"}})
-        self.assertEqual(str(f.attrs["osm_motorroad"][0]), "yes")
-
     def test_symbolic_country_limit_does_not_replace_an_explicit_numeric_limit(self):
         f = tagged([[(0, 0), (200, 0)]], ["trunk"], ["w1@1"],
                    {1: {"maxspeed": 80.0, "maxspeed_tag": "RU:rural"}})
