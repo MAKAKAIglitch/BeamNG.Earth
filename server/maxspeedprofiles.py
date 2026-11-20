@@ -10,7 +10,7 @@ import re
 PROFILES = {
     "AM": {"urban": 60, "rural": 90, "motorway": 110, "trunk": 90, "living_street": 20},
     "AZ": {"urban": 60, "rural": 90, "motorway": 110, "trunk": 90, "living_street": 20},
-    "BY": {"urban": 60, "rural": 90, "motorway": 120, "trunk": 90, "motorroad": 120, "living_street": 20,
+    "BY": {"urban": 60, "rural": 90, "motorway": 120, "trunk": 90, "living_street": 20,
            "classes": {"service": 20}},
     "GE": {"urban": 60, "rural": 90, "motorway": 110, "trunk": 90, "living_street": 20},
     "KG": {"urban": 60, "rural": 90, "motorway": 110, "trunk": 90, "living_street": 20},
@@ -48,7 +48,7 @@ def resolve_tag(value):
     return profile.get(zone) if profile is not None else None
 
 
-def default_kmh(country, spec, motorroad=False):
+def default_kmh(country, spec):
     """Default passenger-car limit for a CIS country and road Spec, else None.
 
     A divided carriageway is recognised from its own one-way geometry and
@@ -68,8 +68,6 @@ def default_kmh(country, spec, motorroad=False):
         return profile["motorway"]
     if urban:
         return profile["urban"]
-    if motorroad and "motorroad" in profile:
-        return profile["motorroad"]
 
     if cls in {"trunk", "primary", "secondary"} and "divided" in profile:
         lanes = getattr(spec, "lanes", None)
