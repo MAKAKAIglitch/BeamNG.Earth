@@ -4,6 +4,7 @@ Sweden retains its country-specific map-majority paint inference. CIS profiles u
 national dimensions from markings.py; an unqualified crossing node is not assumed to have zebra paint. Germany keeps
 its separate de_paint interpretation for Zeichen 293 and mapped stop / give-way controls. The same infrastructure
 nodes are read once for the road graph and road-tile paint.
+"""
 
 import json
 import logging
