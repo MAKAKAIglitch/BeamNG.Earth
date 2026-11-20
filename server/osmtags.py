@@ -53,6 +53,7 @@ COLUMNS = {
               "CASE WHEN width LIKE '%ft%' OR width LIKE '%''%' THEN 0.3048 ELSE 1.0 END"),
     "maxspeed": (f"TRY_CAST(regexp_extract(maxspeed, {_NUM}, 1) AS DOUBLE) * "
                  "CASE WHEN maxspeed LIKE '%mph%' THEN 1.609344 ELSE 1.0 END"),
+    "maxspeed_tag": "maxspeed",
     "sidewalk": "sidewalk",
     "lit": "lit",
     "smoothness": "smoothness",
@@ -70,7 +71,8 @@ COLUMNS = {
     "lane_hw": "CASE WHEN highway IN ('motorway', 'trunk', 'motorway_link', 'trunk_link') THEN highway END",
     "bx0": "bbox.xmin", "by0": "bbox.ymin", "bx1": "bbox.xmax", "by1": "bbox.ymax",
 }
-TEXT_COLUMNS = {"sidewalk", "lit", "smoothness", "osm_surface", "osm_oneway", "name", "osm_highway", "lane_hw"}
+TEXT_COLUMNS = {"sidewalk", "lit", "smoothness", "osm_surface", "osm_oneway", "name", "osm_highway", "lane_hw",
+                "maxspeed_tag"}
 INT_COLUMNS = {"lanes", "osm_layer"}
 GROUPS_FILE = overture.GROUPS_FILE     # the version's parsed row groups (OsmTags._groups)
 TABLE_DIR = "rg"        # a row group's decoded ways (OsmTags._table), in the version's folder
@@ -79,7 +81,7 @@ EXACT32 = {"bx0", "by0", "bx1", "by1", "lanes", "osm_layer"}   # float32 (the fi
 TABLE_WAIT_S = 60.0     # a row group another process decodes is waited for this long
 USED = {"id", "bbox", "lanes", "width", "maxspeed", "sidewalk", "lit", "smoothness", "surface", "oneway", "layer", "name"}
 FLOATS = ("lanes", "width", "maxspeed", "osm_layer")
-TEXTS = ("sidewalk", "lit", "smoothness", "osm_surface", "osm_oneway", "osm_highway")
+TEXTS = ("sidewalk", "lit", "smoothness", "osm_surface", "osm_oneway", "osm_highway", "maxspeed_tag")
 GEOMETRY_MARGIN_M = 6.0    # m round a tagged highway's bbox a replaced way's line may reach (roadlanes.join's 6 m)
 UNBUILT = ("construction", "proposed")      # osm_highway's values: not drawn (roads.unbuilt)
 NAME_MATCH_M = 25.0     # m a segment's middle may lie outside the bbox of the same-named way it takes the tags of
@@ -268,7 +270,7 @@ class OsmTags:
         def load():
             try:
                 with np.load(path, allow_pickle=False) as f:
-                    if "lane_hw_ok" not in f.files or "bus" not in f.files:  # (decoded before busways: decoded again)
+                    if "lane_hw_ok" not in f.files or "bus" not in f.files or "maxspeed_tag_ok" not in f.files:  # decoded before symbolic speed tags
                         return None
                     return {c: f[c] for c in f.files}
             except (OSError, ValueError, KeyError, EOFError, zipfile.BadZipFile):    # (damaged: decoded again)
@@ -681,6 +683,19 @@ def join(feats, tags, geometry=None):
         src = ids if c == "osm_oneway" else named
         feats.attrs[c if c.startswith("osm_") else "osm_" + c] = mg.text_column(
             [str(tags.get(w, {}).get(c, "")) if w is not None else "" for w in src])
+    # OSM's symbolic maxspeed values (RU:rural, BY:urban, etc.) are not numeric
+    # in Layercake's parquet column. Resolve them into the numeric speed input
+    # consumed by roads.road_specs, navgraph and the speed-limit sign renderer.
+    maxspeed = feats.attrs.get("osm_maxspeed")
+    maxspeed_tags = feats.attrs.get("osm_maxspeed_tag")
+    if maxspeed is not None and maxspeed_tags is not None:
+        import maxspeedprofiles
+        for i, value in enumerate(maxspeed_tags):
+            if not np.isfinite(maxspeed[i]):
+                resolved = maxspeedprofiles.resolve_tag(value)
+                if resolved is not None:
+                    maxspeed[i] = float(resolved)
+
     # A way without a lane count takes the count of the same-named way around it going the same way (one-way or
     # not): OpenStreetMap's lanes ahead of the class's width (Portland's arterials carry lanes on some of their ways
     # only, the rest were drawn at the class's guess, the user 2026-10-27).
