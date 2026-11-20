@@ -1,18 +1,10 @@
-"""Sweden's crossings as the map has them (roads.build_tile, country SE), and its priority signs.
+"""Mapped pedestrian crossings, stop lines and priority nodes for road marking generation.
 
-junctions.find draws a crosswalk on every arm with two corners and a stop line behind it, as West Coast USA's streets
-look. A Swedish street is painted by rule (TSFS 2010:171): M15 only where a B3 stands or signals are (4 kap. 8 §), M13
-only at a B2 or at signals (3 kap. 1, 3 §§), so nothing at a junction under the right-hand rule. OpenStreetMap maps
-these nodes (Overture's infrastructure layer) and most say whether there is paint. Tallied 2026-11-02, within 1.5 km of
-the middle of Borås, Göteborg, Stockholm, Malmö and Umeå: 7427 crossings, 95% within 2 m of a road's centreline.
+Sweden retains its country-specific map-majority paint inference. CIS profiles use explicit OSM crossing tags and
+national dimensions from markings.py; an unqualified crossing node is not assumed to have zebra paint. Germany keeps
+its separate de_paint interpretation for Zeichen 293 and mapped stop / give-way controls. The same infrastructure
+nodes are read once for the road graph and road-tile paint.
 
-A crossing with no word on its paint counts as painted. crossing=uncontrolled is OpenStreetMap's word for a marked
-crossing without signals; of the signal crossings that say, 614 of 722 have a zebra; of the bare ones that say, 296 of
-492. A guess, but the map's majority in each case, and all of them are mapped crossings where a kerb is lowered.
-
-Germany reads the same nodes when its junction signs are on (wanted): its own reading of the crossings (de_paint, for
-designs.junction_paint's Zeichen 293) and the stop and give-way points (designs.mapped_rows).
-"""
 import json
 import logging
 import math
@@ -87,12 +79,7 @@ def de_paint(tags):
 
 
 def nodes(frame, infra_list, country=None):
-    """{"crossings": [(x, y, paint)], "zebras": [(x, y)] of those painted M15 and no signal's (sesigns' B3),
-    "de_crossings": [(x, y, de_paint)] Germany's reading of the same crossings, M15 none within SIGNALS_NEAR_M of a
-    mapped signal (designs.junction_paint), "stop_lines": (n, 2) xy of the mapped stop lines (road_marking=stop_line on
-    a signal or stop node), "priority": (n, 3) x, y, 1 at a stop sign and 0 at a give-way sign} of infrastructure
-    Features of map cells, each node once; None when none could be read or they have no tags (the road tiles then
-    guess, as elsewhere)."""
+    """Country-aware crossing paint, stop-line points and priority nodes from the infrastructure layer."""
     if not infra_list or all(f is None for f in infra_list):
         return None
     seen, found = set(), []
