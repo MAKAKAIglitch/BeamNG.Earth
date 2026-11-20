@@ -97,9 +97,13 @@ class StyleTest(unittest.TestCase):
         self.assertAlmostEqual(md.yield_line_w, 0.40)
         self.assertEqual(ua.crosswalk_urban_min, 2.5)
         self.assertEqual(ua.crosswalk_min, 4.0)
+        ge = markings.style("GE")
+        self.assertTrue(ge.double_centre)
+        self.assertEqual(ge.edge_pattern, (3.0, 3.0))
+        self.assertAlmostEqual(ge.edge, 0.20)
 
     def test_only_verified_cis_profiles_enable_double_centre_lines(self):
-        verified = {"KZ", "MD", "RU", "UA"}
+        verified = {"AM", "AZ", "GE", "KG", "KZ", "MD", "RU", "UA", "UZ"}
         for country in markings.CIS_MARKING_COUNTRIES:
             with self.subTest(country=country):
                 self.assertEqual(markings.style(country).double_centre, country in verified)
