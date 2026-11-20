@@ -14,7 +14,7 @@ import geotiles
 VERSION='eu-road-details-2026-11-v6-central-asia'
 VERGE_CONTEXT_M = 32.0
 PROFILES={c:('a','red') for c in
-          'AD AL AM AT AX AZ BA BE BG BY CH CY CZ DE DK EE ES FI FO FR GB GE GG GI GR HR HU IE IM IS KG KZ TJ TM UZ JE LI LT LU LV MC MD ME MK MT NL NO PL PT RO RS RU SE SI SK SM TR UA VA XK'.split()}
+          'AD AL AM AT AX AZ BA BE BG BY CH CY CZ DE DK EE ES FI FO FR GB GE GG GI GR HR HU IE IM IS IT KG KZ TJ TM UZ JE LI LT LU LV MC MD ME MK MT NL NO PL PT RO RS RU SE SI SK SM TR UA VA XK'.split()}
 for c in 'DE IE ME TR'.split():PROFILES[c]=('mixed','red')
 for c in 'DK PL HR RS'.split():PROFILES[c]=('b','red')
 for c in 'CZ SK'.split():PROFILES[c]=('thin','red')
