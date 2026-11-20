@@ -11695,25 +11695,27 @@ def build_tile(frame, tx, ty, cells, elev, urban_fn=None, walks=None, bridges=No
         import secrossings as _cx
         st = _cis_marks.style(line_country, roads[0][3] if roads else None)
         crosswalk_look = dict(junctions.CROSSWALK, tl=st.crosswalk_tl)
+        mapped_stop_lines = None
         if nodes is not None:
             crosswalks, squares, cw_ramps = _cx.place(
                 roads, nodes, crosswalk_min=st.crosswalk_min, crosswalk_fast=st.crosswalk_fast,
                 crosswalk_urban_min=st.crosswalk_urban_min, crosswalk_fast_kmh=st.crosswalk_fast_kmh)
+            mapped_stop_lines = nodes["stop_lines"]
             teeth.extend(squares)
             for key, rows in cw_ramps.items():
                 jramps.setdefault(key, []).extend(rows)
             zebras = [(np.array([cw["a"], cw["b"]])[:, :2], cw["w"] / 2) for cw in crosswalks]
-            stops, stop_cuts = _cis_marks.stop_lines(
-                furniture.give_way_arms(roads, signals, country, priority, stops=True),
-                crosswalks, nodes["stop_lines"], left_hand, w=st.stop_line_w)
-            for fid_, cuts_ in stop_cuts.items():
-                jlines.setdefault(fid_, []).extend(cuts_)
-            m14, gone = _cis_marks.give_way_lines(
-                furniture.give_way_arms(roads, signals, country, priority), crosswalks, left_hand,
-                height=st.yield_h, base=st.yield_base, gap=st.yield_gap,
-                dash=st.yield_dash, line_width=st.yield_line_w)
-            teeth.extend(m14)
-            crosswalks = [cw for j, cw in enumerate(crosswalks) if j not in gone] + stops
+        stops, stop_cuts = _cis_marks.stop_lines(
+            furniture.give_way_arms(roads, signals, country, priority, stops=True),
+            crosswalks, mapped_stop_lines, left_hand, w=st.stop_line_w)
+        for fid_, cuts_ in stop_cuts.items():
+            jlines.setdefault(fid_, []).extend(cuts_)
+        m14, gone = _cis_marks.give_way_lines(
+            furniture.give_way_arms(roads, signals, country, priority), crosswalks, left_hand,
+            height=st.yield_h, base=st.yield_base, gap=st.yield_gap,
+            dash=st.yield_dash, line_width=st.yield_line_w)
+        teeth.extend(m14)
+        crosswalks = [cw for j, cw in enumerate(crosswalks) if j not in gone] + stops
     elif walks is not None and str(country or "").upper() != "SE":
         # other countries: a give-way line across each roundabout entry (roundabouts.entry_marks)
         import roundabouts as _rb
