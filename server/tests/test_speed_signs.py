@@ -41,16 +41,16 @@ def near(signs, x, y, r):
 
 
 class CountryProfileSignsTest(unittest.TestCase):
-    def test_speed_sign_uses_the_same_country_profile_as_traffic(self):
+    def test_speed_sign_uses_each_cis_country_profile(self):
         from test_roads import features
         feats = features([[(0, 0), (200, 0)]], ["trunk"])
         spec = SimpleNamespace(kmh=None, cls="trunk", urban=False, oneway=False, lanes=None, link=False)
-        ru = speedsigns._limits(feats, 0, spec, False, speedsigns.STYLE_VIENNA, country="RU")
-        kz = speedsigns._limits(feats, 0, spec, False, speedsigns.STYLE_VIENNA, country="KZ")
-        by = speedsigns._limits(feats, 0, spec, False, speedsigns.STYLE_VIENNA, country="BY")
-        self.assertEqual(ru, [(0.0, 90.0)])
-        self.assertEqual(kz, [(0.0, 100.0)])
-        self.assertEqual(by, [(0.0, 90.0)])
+        expected = {"AM": 90, "AZ": 90, "BY": 90, "GE": 90, "KG": 90, "KZ": 100,
+                    "MD": 90, "RU": 90, "TJ": 90, "TM": 90, "UA": 90, "UZ": 100}
+        for country, kmh in expected.items():
+            with self.subTest(country=country):
+                got = speedsigns._limits(feats, 0, spec, False, speedsigns.STYLE_VIENNA, country=country)
+                self.assertEqual(got, [(0.0, float(kmh))])
 
 
 @unittest.skipUnless(getattr(fast._ef, "VERSION", 0) >= speedsigns.KERNEL, "earthfast with the speed-sign kernels")
