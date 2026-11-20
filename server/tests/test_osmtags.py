@@ -129,6 +129,19 @@ class SpecTest(unittest.TestCase):
         f = tagged([[(0, 0), (200, 0)]], ["residential"], ["w1@1"], {1: {"maxspeed": 40.2336}})
         self.assertAlmostEqual(roads.road_specs(f)[0].kmh, 40.2336)
 
+    def test_symbolic_cis_maxspeed_is_resolved_and_kept(self):
+        f = tagged([[(0, 0), (200, 0)]], ["trunk"], ["w1@1"],
+                   {1: {"maxspeed": "RU:rual"}})
+        self.assertAlmostEqual(f.attrs["osm_maxspeed"][0], 90.0)
+        self.assertEqual(str(f.attrs["osm_maxspeed_tag"][0]), "RU:rual")
+        self.assertAlmostEqual(roads.road_specs(f)[0].kmh, 90.0)
+
+    def test_symbolic_country_limit_does_not_replace_an_explicit_numeric_limit(self):
+        f = tagged([[(0, 0), (200, 0)]], ["trunk"], ["w1@1"],
+                   {1: {"maxspeed": 80.0, "maxspeed_tag": "RU:rural"}})
+        self.assertAlmostEqual(f.attrs["osm_maxspeed"][0], 80.0)
+        self.assertAlmostEqual(roads.road_specs(f)[0].kmh, 80.0)
+
     def test_navgraph_takes_the_lane_count(self):
         self.assertEqual(navgraph._lanes(7.0, False, 4), (2, 2))
         self.assertEqual(navgraph._lanes(7.0, True, 3), (3, 0))
