@@ -89,6 +89,8 @@ def fixture_rows(seed=7):
                  np.vstack([oval[0], [LON0 - 0.01, LAT0 - 0.012]])))
     rows.append((900005, dict(highway="busway", name="Bus", lanes="2", oneway="yes"),
                  np.array([[LON0 - 0.02, LAT0], [LON0 + 0.02, LAT0 + 0.001]])))
+    rows.append((900007, dict(highway="trunk", name="Russian symbolic limit", maxspeed="RU:rual"),
+                 np.array([[LON0 - 0.01, LAT0 - 0.005], [LON0 + 0.01, LAT0 - 0.005]])))
     rows.append((900006, dict(highway="primary", name="No box"), None))     # (a NULL bbox: in no cell)
     return rows
 
@@ -257,6 +259,7 @@ class ShardsMatchLayercakeTest(unittest.TestCase):
         sh = self.shards(os.path.join(self.tmp, "c1"), f)
         seen_tags = seen_ways = seen_geom = 0
         outlines = set()
+        symbolic = None
         for k in self.cells():
             t = sh.tile(k)
             got = osmtags.from_tile(t, k.bounds())
@@ -281,6 +284,10 @@ class ShardsMatchLayercakeTest(unittest.TestCase):
             seen_ways += len(want[1])
             seen_geom += len(gb)
             outlines |= {w["id"] for w in want[1]}
+            if 900007 in got[0]:
+                symbolic = got[0][900007]
+        self.assertIsNotNone(symbolic, "the symbolic-speed way survives the OSM shard decoder")
+        self.assertEqual(symbolic["maxspeed"], "RU:rual")
         self.assertGreater(seen_tags, 300)
         self.assertGreater(seen_geom, 10)
         self.assertIn(900005, outlines, "the busway")
