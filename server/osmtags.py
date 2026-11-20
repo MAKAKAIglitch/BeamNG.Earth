@@ -677,12 +677,23 @@ def join(feats, tags, geometry=None):
             src = [ids[i] if classes[i] in roadlanes.HIGHWAYS else w for i, w in enumerate(named)]
             feats.attrs["osm_lanes"] = np.array([roadlanes.count(tags.get(w, {}).get(c)) or np.nan for w in src])
             continue
-        feats.attrs["osm_" + c if not c.startswith("osm_") else c] = np.array(
-            [float(tags.get(w, {}).get(c, np.nan)) if w is not None else np.nan for w in named], np.float64)
+        def number(w):
+            try:
+                return float(tags.get(w, {}).get(c, np.nan)) if w is not None else np.nan
+            except (TypeError, ValueError):
+                return np.nan
+        feats.attrs["osm_" + c if not c.startswith("osm_") else c] = np.array([number(w) for w in named],
+                                                                                np.float64)
     for c in TEXTS:
         src = ids if c == "osm_oneway" else named
-        feats.attrs[c if c.startswith("osm_") else "osm_" + c] = mg.text_column(
-            [str(tags.get(w, {}).get(c, "")) if w is not None else "" for w in src])
+        values = []
+        for w in src:
+            row = tags.get(w, {}) if w is not None else {}
+            value = row.get(c)
+            if c == "maxspeed_tag" and value is None:
+                value = row.get("maxspeed")
+            values.append(str(value) if value is not None else "")
+        feats.attrs[c if c.startswith("osm_") else "osm_" + c] = mg.text_column(values)
     # OSM's symbolic maxspeed values (RU:rural, BY:urban, etc.) are not numeric
     # in Layercake's parquet column. Resolve them into the numeric speed input
     # consumed by roads.road_specs, navgraph and the speed-limit sign renderer.
