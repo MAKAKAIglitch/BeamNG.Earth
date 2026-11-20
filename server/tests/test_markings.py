@@ -40,6 +40,24 @@ class StyleTest(unittest.TestCase):
                 self.assertIsNone(style.left_edge)
                 self.assertFalse(style.double_centre_urban)
 
+    def test_all_cis_countries_have_independent_profiles(self):
+        expected = {"AM", "AZ", "BY", "GE", "KG", "KZ", "MD", "RU", "TJ", "TM", "UA", "UZ"}
+        self.assertEqual(set(markings.CIS_MARKING_COUNTRIES), expected)
+        self.assertEqual(set(markings.CIS_STYLES), expected)
+        self.assertEqual(set(markings.CIS_STYLES), expected)
+        for country in expected:
+            with self.subTest(country=country):
+                self.assertIs(markings.style(country), markings.CIS_STYLES[country])
+        self.assertEqual(markings.style("DE"), markings._DE)
+        self.assertEqual(markings.style("US"), markings._US)
+
+    def test_shared_gost_32953_adoption_group_is_explicit(self):
+        self.assertEqual(markings._CIS_GOST_32953, {"AM", "BY", "KG", "KZ", "RU", "TJ"})
+        self.assertEqual(markings.style("AM").centre, "line_white")
+        self.assertEqual(markings.style("BY").centre, "line_white")
+        self.assertEqual(markings.style("KZ").centre, "line_white")
+        self.assertEqual(markings.style("TJ").centre, "line_white")
+
     def test_existing_non_russian_profiles_are_not_replaced(self):
         self.assertEqual(markings.style("DE").centre_rural, (6.0, 12.0))
         self.assertEqual(markings.style("US").centre, "line_yellow")
