@@ -57,6 +57,11 @@ class WantedTest(unittest.TestCase):
         self.assertFalse(secrossings.wanted("DE"))
         self.assertFalse(secrossings.wanted("DE", de=False))
 
+    def test_cis_countries_read_mapped_crossings_and_intersection_nodes(self):
+        for country in ("AM", "AZ", "BY", "GE", "KG", "KZ", "MD", "RU", "TJ", "TM", "UA", "UZ"):
+            with self.subTest(country=country):
+                self.assertTrue(secrossings.wanted(country))
+
     def test_elsewhere(self):
         self.assertFalse(secrossings.wanted("FR"))
         self.assertFalse(secrossings.wanted(None))
@@ -154,6 +159,11 @@ class PlaceTest(unittest.TestCase):
         self.assertEqual(walks[0]["w"], 3.0)
         self.assertEqual(squares, [])
         self.assertEqual(set(ramps), {("a", 1), ("a", -1)})
+
+    def test_country_profile_can_require_a_wider_crossing(self):
+        walks, _, _ = secrossings.place([road("a", kmh=50.0)], found((50.0, 0.0, secrossings.M15)),
+                                        crosswalk_min=4.0, crosswalk_fast=4.0)
+        self.assertEqual(walks[0]["w"], 4.0)
 
     def test_unmarked_is_kerbs_and_no_paint(self):
         walks, squares, ramps = secrossings.place([road("a")], found((50.0, 0.0, 0)))
