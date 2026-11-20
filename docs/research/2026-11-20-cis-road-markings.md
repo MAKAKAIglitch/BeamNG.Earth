@@ -13,8 +13,9 @@ The renderer now uses country-aware profiles for:
 - mapped pedestrian crossings, with country-aware interpretation of OSM crossing tags;
 - crossing length by road speed where the national document gives a threshold.
 
-The renderer uses a shared crossing texture with country-specific repeat length for Russia and Kazakhstan. More complex
-crossing variants (arrows, yellow-filled variants and traffic-signal variants), as well as arrows, hatched islands, bicycle crossings, parking/bus-stop markings and temporary work-zone markings remain follow-up work.
+The renderer uses a shared base crossing texture with country-specific repeat length for Russia and Kazakhstan. Other
+crossing variants (arrows, yellow-filled and signal-controlled patterns), hatched islands, bicycle crossings,
+parking/bus-stop markings and temporary work-zone markings remain follow-up work.
 
 ## Verified national references
 
