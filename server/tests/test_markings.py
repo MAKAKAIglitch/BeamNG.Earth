@@ -59,6 +59,36 @@ class StyleTest(unittest.TestCase):
         self.assertEqual(markings.style("KZ").centre, "line_white")
         self.assertEqual(markings.style("TJ").centre, "line_white")
 
+    def test_verified_cis_profiles_have_national_dimensions(self):
+        kz = markings.style("KZ")
+        self.assertAlmostEqual(kz.w, 0.12)
+        self.assertAlmostEqual(kz.edge_motorway, 0.20)
+        self.assertAlmostEqual(kz.stop_line_w, 0.40)
+        self.assertAlmostEqual(kz.yield_h, 0.90)
+        self.assertEqual(markings.road_style("KZ", kmh=50).centre_rural, (2.0, 6.0))
+        self.assertEqual(markings.road_style("KZ", kmh=90).centre_rural, (3.0, 9.0))
+        self.assertEqual(markings.road_style("KZ", kmh=91).centre_rural, (4.0, 12.0))
+
+        ua = markings.style("UA")
+        self.assertTrue(ua.double_centre)
+        self.assertAlmostEqual(ua.stop_line_w, 0.40)
+        self.assertAlmostEqual(ua.yield_h, 0.70)
+        self.assertEqual(markings.road_style("UA", kmh=40).centre_rural, (2.0, 4.0))
+        self.assertEqual(markings.road_style("UA", kmh=70).centre_rural, (3.0, 6.0))
+        self.assertEqual(markings.road_style("UA", kmh=100).centre_rural, (4.0, 8.0))
+
+        md = markings.style("MD")
+        self.assertAlmostEqual(md.w, 0.15)
+        self.assertAlmostEqual(md.double_gap, 0.10)
+        self.assertEqual(markings.road_style("MD", kmh=50).centre_rural, (2.0, 4.0))
+        self.assertEqual(markings.road_style("MD", kmh=70).centre_rural, (3.0, 6.0))
+
+    def test_cis_profiles_enable_double_centre_lines(self):
+        for country in markings.CIS_MARKING_COUNTRIES:
+            with self.subTest(country=country):
+                self.assertTrue(markings.style(country).double_centre)
+                self.assertAlmostEqual(markings.style(country).stop_line_w, 0.40)
+
     def test_existing_non_russian_profiles_are_not_replaced(self):
         self.assertEqual(markings.style("DE").centre_rural, (6.0, 12.0))
         self.assertEqual(markings.style("US").centre, "line_yellow")
@@ -67,7 +97,7 @@ class StyleTest(unittest.TestCase):
     def test_russian_dash_lengths_follow_gost_speed_bands(self):
         self.assertEqual(markings.road_style("RU", kmh=60).centre_rural, (3.0, 9.0))
         self.assertEqual(markings.road_style("RU", kmh=61).centre_rural, (4.0, 12.0))
-        self.assertEqual(markings.road_style("BY", kmh=50, urban=True).centre_urban, (3.0, 6.0))
+        self.assertEqual(markings.road_style("BY", kmh=50, urban=True).centre_urban, (3.0, 9.0), "unverified dimensions keep the conservative fallback")
         self.assertEqual(markings.road_style("RU", kmh=60, urban=True).centre_urban, (1.0, 3.0))
         self.assertEqual(markings.road_style("RU", urban=True).centre_urban, (1.0, 3.0))
         self.assertEqual(markings.road_style("RU", motorway=True).centre_rural, (4.0, 12.0))
@@ -254,6 +284,11 @@ class GiveWayLineTest(unittest.TestCase):
         self.assertAlmostEqual(teeth[0][2, 1], 6.7, 3, "pointing at the drivers")
         self.assertTrue(np.allclose(np.diff(sorted(t[:, 0].mean() for t in teeth)), 1.0), "0.50 m apart")
         self.assertTrue((pts[:, 2] == 3.0).all())
+
+    def test_country_profile_can_change_yield_triangle_dimensions(self):
+        pts, _ = markings.give_way_lines([self.arm()], [], height=0.90, base=0.50, gap=0.30)
+        self.assertTrue(pts)
+        self.assertAlmostEqual(np.ptp(np.concatenate(pts)[:, 1]), 0.90, 6)
 
     def test_left_hand_and_one_way(self):
         self.assertTrue((np.concatenate(markings.give_way_lines([self.arm()], [], True)[0])[:, 0] > 0).all())
