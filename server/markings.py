@@ -107,7 +107,7 @@ _KZ = Style(centre="line_white", w=0.12, w_motorway=0.15, edge=0.12, edge_motorw
             lane_rural=(2.0, 6.0), lane_urban=(1.0, 3.0), lane_motorway=(3.0, 9.0),
             left_edge=None, double_centre_urban=False, double_gap=0.12, min_centre_m=5.5,
             double_centre=True, stop_line_w=0.40, yield_h=0.90, yield_base=0.50, yield_gap=0.30,
-            crosswalk_min=2.5, crosswalk_fast=4.0, crosswalk_urban_min=2.5, crosswalk_fast_kmh=60.0,
+            crosswalk_min=2.5, crosswalk_fast=4.5, crosswalk_urban_min=2.5, crosswalk_fast_kmh=60.0,
             crosswalk_tl=4.0)
 
 # Moldova: CP D.02.33:2024 (effective 2024-03-22), Appendix R. It specifies 0.15 m narrow lines,
