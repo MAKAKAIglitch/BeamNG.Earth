@@ -82,6 +82,27 @@ class ProfileTest(unittest.TestCase):
         self.assertTrue(lanes)
         self.assertEqual({look['tl'] for look in lanes}, {1.0})
 
+    def test_moldova_rural_edge_lines_are_dashed_but_urban_and_motorway_edges_are_solid(self):
+        rural = roads.Spec(7.0, 'paved', False, 'primary', False, kmh=70.0)
+        ex = roads.extras(rural, LINE, 29.0, country='MD', defer_dashes=True)
+        edges = [(look, width) for look, width, _ in ex if look.get('kind') == 'edge']
+        self.assertEqual(len(edges), 2)
+        self.assertTrue(all(look.get('dash') for look, _ in edges))
+        self.assertEqual({width for _, width in edges}, {0.15})
+
+        urban = rural._replace(urban=True)
+        ex = roads.extras(urban, LINE, 29.0, country='MD', defer_dashes=True)
+        edges = [(look, width) for look, width, _ in ex if look.get('kind') == 'edge']
+        self.assertEqual(len(edges), 2)
+        self.assertTrue(all('dash' not in look for look, _ in edges))
+
+        motorway = roads.Spec(10.0, 'paved', False, 'motorway', True, kmh=100.0)
+        ex = roads.extras(motorway, LINE, 29.0, country='MD', defer_dashes=True)
+        edges = [(look, width) for look, width, _ in ex if look.get('kind') == 'edge']
+        self.assertEqual(len(edges), 2)
+        self.assertTrue(all('dash' not in look for look, _ in edges))
+        self.assertEqual({width for _, width in edges}, {0.25})
+
     def test_foreign_and_minor_road_styles_remain_native(self):
         for country,lon in (('GB',0.),('DE',10.),('CA',-100.)):
             ex=roads.extras(spec(),LINE,lon,country=country,defer_dashes=True)
