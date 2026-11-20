@@ -119,7 +119,9 @@ def nodes(frame, infra_list, country=None):
             de.append((float(p[0]), float(p[1]), de_paint(tag)))
             if str(tag.get("crossing:island", "")).lower() == "yes":      # (a refuge in the road: a splitter island, plan 038)
                 refuges.append((float(p[0]), float(p[1])))
-            if paint(tag, country) & M15 and tag.get("crossing") != "traffic_signals":
+            if paint(tag, country) & M15 and (
+                    str(country or "").upper() in {"AM", "AZ", "BY", "GE", "KG", "KZ", "MD", "RU", "TJ", "TM", "UA", "UZ"}
+                    or tag.get("crossing") != "traffic_signals"):
                 zebras.append((float(p[0]), float(p[1])))
         elif cls == "traffic_signals":
             signals.append((float(p[0]), float(p[1])))
