@@ -11705,6 +11705,9 @@ def build_tile(frame, tx, ty, cells, elev, urban_fn=None, walks=None, bridges=No
             for key, rows in cw_ramps.items():
                 jramps.setdefault(key, []).extend(rows)
             zebras = [(np.array([cw["a"], cw["b"]])[:, :2], cw["w"] / 2) for cw in crosswalks]
+        else:
+            # Do not reuse generic / Swedish-inferred zebra placements when the CIS crossing layer is unavailable.
+            crosswalks, zebras = [], []
         stops, stop_cuts = _cis_marks.stop_lines(
             furniture.give_way_arms(roads, signals, country, priority, stops=True),
             crosswalks, mapped_stop_lines, left_hand, w=st.stop_line_w)
