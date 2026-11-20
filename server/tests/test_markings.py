@@ -21,9 +21,9 @@ class StyleTest(unittest.TestCase):
         self.assertEqual(markings.style(None, 10.0).centre, "line_white")
         self.assertEqual(markings.style("SE").centre_rural, (3.0, 9.0))
 
-    def test_cis_and_post_soviet_country_profiles(self):
-        expected = ("AM", "AZ", "BY", "GE", "KG", "KZ", "MD", "RU", "TJ", "TM", "UA", "UZ")
-        self.assertEqual(markings.POST_SOVIET_MARKING_COUNTRIES, expected)
+    def test_russian_profile_only(self):
+        expected = ("RU",)
+        self.assertEqual(markings.RUSSIAN_MARKING_COUNTRIES, expected)
         for country in expected:
             with self.subTest(country=country):
                 style = markings.style(country)
@@ -45,14 +45,14 @@ class StyleTest(unittest.TestCase):
         self.assertEqual(markings.style("US").centre, "line_yellow")
         self.assertEqual(markings.style("GB").lane_urban, (1.0, 5.0))
 
-    def test_cis_dash_lengths_follow_gost_speed_bands(self):
+    def test_russian_dash_lengths_follow_gost_speed_bands(self):
         self.assertEqual(markings.road_style("RU", kmh=60).centre_rural, (3.0, 9.0))
         self.assertEqual(markings.road_style("RU", kmh=61).centre_rural, (4.0, 12.0))
-        self.assertEqual(markings.road_style("KZ", kmh=90).lane_motorway, (4.0, 12.0))
-        self.assertEqual(markings.road_style("BY", kmh=50, urban=True).centre_urban, (1.0, 3.0))
+        self.assertEqual(markings.road_style("BY", kmh=50, urban=True).centre_urban, (3.0, 6.0))
         self.assertEqual(markings.road_style("RU", kmh=60, urban=True).centre_urban, (1.0, 3.0))
         self.assertEqual(markings.road_style("RU", urban=True).centre_urban, (1.0, 3.0))
         self.assertEqual(markings.road_style("RU", motorway=True).centre_rural, (4.0, 12.0))
+        self.assertEqual(markings.road_style("KZ", kmh=90).lane_motorway, (3.0, 9.0))
         self.assertEqual(markings.road_style("DE", kmh=50).centre_rural, (6.0, 12.0))
 
 
