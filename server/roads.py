@@ -6443,7 +6443,7 @@ def extras(spec, pts, lon, left_hand=False, country=None, osm=None, ws=None, shi
             elif how == "double" or (sweden and lanes >= 4 and how is None):     # (TSFS 2010:171 2 kap. 17 §)
                 if st.warning and w < markings.WARNING_BELOW_M:
                     mark("centre", st.centre, lw_, at(off), st.warning)
-                elif st.centre == "line_yellow" or sweden or st is markings.STYLES.get("GB"):
+                elif st.double_centre or st.centre == "line_yellow" or sweden or st is markings.STYLES.get("GB"):
                     for sd in (1, -1):
                         mark("centre", st.centre, lw_, at(off + sd * d))
                 else:
@@ -6461,7 +6461,7 @@ def extras(spec, pts, lon, left_hand=False, country=None, osm=None, ws=None, shi
         # more get a solid line (the Americas: double solid yellow), and in the US a town's street a double solid one;
         # otherwise one broken line in the country's colour and town / country pattern
         solid = lanes >= 4 or (st.double_centre_urban and urban)
-        if solid and (st.centre == "line_yellow" or sweden):
+        if solid and (st.double_centre or st.centre == "line_yellow" or sweden):
             for side in (1, -1):
                 mark("centre", st.centre, lw_, offset_polyline(pts, side * (st.double_gap + lw_) / 2))
         elif solid:
@@ -11686,8 +11686,33 @@ def build_tile(frame, tx, ty, cells, elev, urban_fn=None, walks=None, bridges=No
         de_ctl = designs.decide(roads, de_ctx, reach, signals, country, priority)
         crosswalks, jlines, jramps, teeth, zebras = designs.junction_paint(
             de_ctl, roads, de_ctx, crosswalks, jlines, jramps, nodes, signals, left_hand)
+    elif walks is not None and str(country or "").upper() in {
+            "AM", "AZ", "BY", "GE", "KG", "KZ", "MD", "RU", "TJ", "TM", "UA", "UZ"}:
+        # CIS: read mapped crossings, stop lines and priority nodes; use the national dimensions for the
+        # longitudinal lines and the transverse stop / give-way markings.
+        import furniture
+        import markings as _cis_marks
+        import secrossings as _cx
+        st = _cis_marks.style(line_country, roads[0][3] if roads else None)
+        if nodes is not None:
+            crosswalks, squares, cw_ramps = _cx.place(
+                roads, nodes, crosswalk_min=st.crosswalk_min, crosswalk_fast=st.crosswalk_fast)
+            teeth.extend(squares)
+            for key, rows in cw_ramps.items():
+                jramps.setdefault(key, []).extend(rows)
+            zebras = [(np.array([cw["a"], cw["b"]])[:, :2], cw["w"] / 2) for cw in crosswalks]
+            stops, stop_cuts = _cis_marks.stop_lines(
+                furniture.give_way_arms(roads, signals, country, priority, stops=True),
+                crosswalks, nodes["stop_lines"], left_hand, w=st.stop_line_w)
+            for fid_, cuts_ in stop_cuts.items():
+                jlines.setdefault(fid_, []).extend(cuts_)
+            m14, gone = _cis_marks.give_way_lines(
+                furniture.give_way_arms(roads, signals, country, priority), crosswalks, left_hand,
+                height=st.yield_h, base=st.yield_base, gap=st.yield_gap)
+            teeth.extend(m14)
+            crosswalks = [cw for j, cw in enumerate(crosswalks) if j not in gone] + stops
     elif walks is not None and str(country or "").upper() != "SE":
-        # every other country: a give-way line across each roundabout entry (roundabouts.entry_marks)
+        # other countries: a give-way line across each roundabout entry (roundabouts.entry_marks)
         import roundabouts as _rb
         rb_marks, rb_cuts = _rb.entry_marks(roads, signals, country, priority, crosswalks, left_hand)
         teeth = teeth + rb_marks
