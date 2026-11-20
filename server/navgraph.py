@@ -243,10 +243,7 @@ def road_mph(feats, i, spec, mph=True, at=0.5, country=None, de_on=False):
         mapped = getattr(spec, "kmh", None)
         if mapped is not None and math.isfinite(float(mapped)) and float(mapped) > 0:
             return float(mapped) / 1.609344
-        motorroad_tags = getattr(feats, "attrs", {}).get("osm_motorroad")
-        motorroad = (motorroad_tags is not None and i < len(motorroad_tags)
-                     and str(motorroad_tags[i]).strip().lower() in ("yes", "1", "true"))
-        default = maxspeedprofiles.default_kmh(cc, spec, motorroad=motorroad)
+        default = maxspeedprofiles.default_kmh(cc, spec)
         if default is not None:
             return float(default) / 1.609344
     if country == "US" and spec.cls == "motorway" and not getattr(spec, "link", False):     # (not a ramp)
