@@ -71,6 +71,8 @@ class StyleTest(unittest.TestCase):
 
         ua = markings.style("UA")
         self.assertTrue(ua.double_centre)
+        self.assertAlmostEqual(ua.w, 0.15)
+        self.assertAlmostEqual(ua.w_urban, 0.10)
         self.assertAlmostEqual(ua.stop_line_w, 0.40)
         self.assertAlmostEqual(ua.yield_h, 0.70)
         self.assertEqual(markings.road_style("UA", kmh=40).centre_rural, (2.0, 4.0))
@@ -89,10 +91,11 @@ class StyleTest(unittest.TestCase):
         self.assertEqual(ua.crosswalk_urban_min, 2.5)
         self.assertEqual(ua.crosswalk_min, 4.0)
 
-    def test_cis_profiles_enable_double_centre_lines(self):
+    def test_only_verified_cis_profiles_enable_double_centre_lines(self):
+        verified = {"KZ", "MD", "RU", "UA"}
         for country in markings.CIS_MARKING_COUNTRIES:
             with self.subTest(country=country):
-                self.assertTrue(markings.style(country).double_centre)
+                self.assertEqual(markings.style(country).double_centre, country in verified)
                 self.assertAlmostEqual(markings.style(country).stop_line_w, 0.40)
 
     def test_existing_non_russian_profiles_are_not_replaced(self):
