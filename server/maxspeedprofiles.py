@@ -10,8 +10,8 @@ import re
 PROFILES = {
     "AM": {"urban": 60, "rural": 90, "motorway": 110, "trunk": 90, "living_street": 20},
     "AZ": {"urban": 60, "rural": 90, "motorway": 110, "trunk": 90, "living_street": 20},
-    "BY": {"urban": 60, "rural": 90, "motorway": 120, "trunk": 90, "living_street": 20,
-           "classes": {"service": 20}},
+    "BY": {"urban": 60, "rural": 90, "motorway": 110, "default_motorway": 120, "trunk": 90,
+           "living_street": 20, "classes": {"service": 20}},
     "GE": {"urban": 60, "rural": 90, "motorway": 110, "trunk": 90, "living_street": 20},
     "KG": {"urban": 60, "rural": 90, "motorway": 110, "trunk": 90, "living_street": 20},
     "KZ": {"urban": 60, "rural": 100, "motorway": 140, "trunk": 100, "divided": 110,
@@ -65,7 +65,7 @@ def default_kmh(country, spec):
     if getattr(spec, "link", False):
         return profile.get("link", profile["rural"])
     if cls == "motorway":
-        return profile["motorway"]
+        return profile.get("default_motorway", profile["motorway"])
     if urban:
         return profile["urban"]
 
