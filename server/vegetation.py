@@ -108,17 +108,17 @@ ROAD_HALF_WIDTH_M = {"motorway": 7.0, "trunk": 6.0, "primary": 5.5, "secondary":
                      "residential": 4.0, "service": 3.0, "unclassified": 3.5, "living_street": 3.0}
 ROAD_HALF_DEFAULT_M = 2.5
 # Canopy maxima that fall inside a road are normally shifted into a tree pit
-# by the curb. In the post-Soviet region this creates street-tree rows that
+# by the curb. In Russia this creates street-tree rows that
 # are uncommon on ordinary roads. Keep mapped/real vegetation away from this
 # heuristic only; existing trees and forests outside the carriageway remain.
-POST_SOVIET_NO_ROADSIDE_TREE_PUSH = frozenset(
-    ("AM", "AZ", "BY", "GE", "KG", "KZ", "MD", "RU", "TJ", "TM", "UA", "UZ")
+RUSSIAN_NO_ROADSIDE_TREE_PUSH = frozenset(
+    ("RU",)
 )
 
 
 def roadside_tree_move_allowed(codes):
     """Vector mask: do not synthesize roadside tree pits in post-Soviet countries."""
-    return np.fromiter((str(code or "").upper() not in POST_SOVIET_NO_ROADSIDE_TREE_PUSH
+    return np.fromiter((str(code or "").upper() not in RUSSIAN_NO_ROADSIDE_TREE_PUSH
                         for code in codes), dtype=bool, count=len(codes))
 
 
