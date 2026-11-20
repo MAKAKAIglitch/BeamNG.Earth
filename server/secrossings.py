@@ -51,13 +51,16 @@ def _marks(tags):
     return set(str(tags.get("crossing:markings", "")).replace(":", ";").split(";")) - {""}
 
 
-def paint(tags):
-    """M15 | M16 | 0: what a crossing node's OpenStreetMap tags say is on the road. crossing:markings=dots (and dashes) is
-    a row of squares each side, a cycle crossing; surface alone is a coloured or paved crossing with no white on it."""
+def paint(tags, country=None):
+    """M15 | M16 | 0: the map's crossing paint. CIS profiles require an explicit marked/zebra tag; the Swedish majority
+    fallback is used only for Sweden and the legacy unspecified caller."""
     marks = _marks(tags)
     what = (M15 if marks & {"zebra", "yes"} else 0) | (M16 if marks & {"dots", "dashes"} else 0)
     if what or marks:
         return what
+    c = str(country or "").upper()
+    if c in {"AM", "AZ", "BY", "GE", "KG", "KZ", "MD", "RU", "TJ", "TM", "UA", "UZ"}:
+        return M15 if tags.get("crossing") in {"zebra", "marked", "uncontrolled"} else 0
     return 0 if tags.get("crossing") in UNPAINTED else M15
 
 
@@ -83,7 +86,7 @@ def de_paint(tags):
     return M15 if tags.get("crossing") in DE_MARKED or tags.get("crossing_ref") == "zebra" else 0
 
 
-def nodes(frame, infra_list):
+def nodes(frame, infra_list, country=None):
     """{"crossings": [(x, y, paint)], "zebras": [(x, y)] of those painted M15 and no signal's (sesigns' B3),
     "de_crossings": [(x, y, de_paint)] Germany's reading of the same crossings, M15 none within SIGNALS_NEAR_M of a
     mapped signal (designs.junction_paint), "stop_lines": (n, 2) xy of the mapped stop lines (road_marking=stop_line on
@@ -124,11 +127,11 @@ def nodes(frame, infra_list):
     crossings, lines, priority, zebras, signals, de, refuges = [], [], [], [], [], [], []
     for (cls, _, tag), p in zip(found, xy if found else ()):
         if cls == "crossing":
-            crossings.append((float(p[0]), float(p[1]), paint(tag)))
+            crossings.append((float(p[0]), float(p[1]), paint(tag, country)))
             de.append((float(p[0]), float(p[1]), de_paint(tag)))
             if str(tag.get("crossing:island", "")).lower() == "yes":      # (a refuge in the road: a splitter island, plan 038)
                 refuges.append((float(p[0]), float(p[1])))
-            if paint(tag) & M15 and tag.get("crossing") != "traffic_signals":
+            if paint(tag, country) & M15 and tag.get("crossing") != "traffic_signals":
                 zebras.append((float(p[0]), float(p[1])))
         elif cls == "traffic_signals":
             signals.append((float(p[0]), float(p[1])))
@@ -146,11 +149,11 @@ def nodes(frame, infra_list):
             "priority": np.array(priority, np.float64).reshape(-1, 3)}
 
 
-def read(md, frame, keys):
-    """nodes of the map cells keys (md: mapdata.MapData), None when their infrastructure cannot be read."""
+def read(md, frame, keys, country=None):
+    """nodes of the map cells keys (md: mapdata.MapData), using country-specific crossing paint interpretation."""
     try:
         return nodes(frame, [md.cell(k, layers=("infrastructure",), kind="demand").layers.get("infrastructure")
-                             for k in keys])
+                             for k in keys], country=country)
     except Exception as e:      # guessed crossings rather than no road tile
         logging.getLogger("earthd.crossings").debug("crossings: %s: %s", type(e).__name__, e)
         return None
