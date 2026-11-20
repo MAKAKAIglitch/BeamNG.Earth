@@ -234,10 +234,20 @@ def road_mph(feats, i, spec, mph=True, at=0.5, country=None, de_on=False):
             from designs import ZONES
             if zone[i] in ZONES:
                 return int(zone[i][3:]) / 1.609344
-    # The road Spec contains OSM's numeric maxspeed as well as symbolic CIS
-    # values resolved by osmtags. Use it for the CIS profiles before class
-    # defaults so the AI and its speed-limit signs agree with the mapped tag.
+    # A symbolic OSM maxspeed carries its own country code. Use that code
+    # directly: sign tiles can cross borders and their tile-level country may
+    # be absent or belong to the neighbouring country. This also keeps the
+    # posted sign tied to the same legal profile as the mapped OSM tag.
     import maxspeedprofiles
+    tags = feats.attrs.get("osm_maxspeed_tag")
+    if tags is not None:
+        symbolic = maxspeedprofiles.resolve_tag(tags[i])
+        if symbolic is not None:
+            return float(symbolic) / 1.609344
+
+    # The road Spec contains OSM's numeric maxspeed as well as country defaults.
+    # Keep this fallback scoped to the tile's country; other countries retain
+    # the original global class defaults.
     cc = str(country or "").upper()
     if cc in maxspeedprofiles.COUNTRIES:
         mapped = getattr(spec, "kmh", None)
