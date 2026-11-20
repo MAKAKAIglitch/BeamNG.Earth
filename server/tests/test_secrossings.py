@@ -1,4 +1,4 @@
-"""Sweden's crossings, stop lines and priority signs from the map's nodes (secrossings.py, markings.stop_lines)."""
+"""Country-aware mapped crossings, stop lines and priority signs (secrossings.py, markings.stop_lines)."""
 import json
 import sys
 import unittest
@@ -43,6 +43,14 @@ class PaintTest(unittest.TestCase):
     def test_no_word_on_paint_is_the_maps_majority(self):
         for tags in ({"crossing": "uncontrolled"}, {"crossing": "traffic_signals"}, {"highway": "crossing"}):
             self.assertEqual(secrossings.paint(tags), secrossings.M15, tags)
+
+    def test_cis_needs_explicit_crossing_marking(self):
+        self.assertEqual(secrossings.paint({"crossing": "uncontrolled"}, "RU"), secrossings.M15)
+        self.assertEqual(secrossings.paint({"crossing": "zebra"}, "KZ"), secrossings.M15)
+        self.assertEqual(secrossings.paint({"crossing": "traffic_signals"}, "RU"), 0)
+        self.assertEqual(secrossings.paint({"crossing": "unmarked"}, "RU"), 0)
+        self.assertEqual(secrossings.paint({"highway": "crossing"}, "RU"), 0)
+        self.assertEqual(secrossings.paint({"crossing:markings": "surface"}, "RU"), 0)
 
 
 class WantedTest(unittest.TestCase):
@@ -137,6 +145,14 @@ class NodesTest(unittest.TestCase):
         self.assertEqual(got["crossings"], [(10.0, 20.0, 0)])
         np.testing.assert_allclose(got["priority"], [[30.0, 40.0, 0.0], [50.0, 60.0, 1.0]])
         np.testing.assert_allclose(got["stop_lines"], [[50.0, 60.0], [70.0, 80.0]])
+
+    def test_cis_nodes_do_not_guess_unmapped_zebras(self):
+        got = secrossings.nodes(Frame(), [Infra([
+            ("crossing", (1.0, 2.0), {}),
+            ("crossing", (3.0, 4.0), {"crossing": "uncontrolled"}),
+            ("crossing", (5.0, 6.0), {"crossing": "unmarked"})])], country="RU")
+        self.assertEqual([row[2] for row in got["crossings"]], [0, secrossings.M15, 0])
+        self.assertEqual(got["zebras"], [(30.0, 40.0)])
 
     def test_a_node_in_two_cells_comes_once(self):
         cell = Infra([("crossing", (1.0, 2.0), {})])
