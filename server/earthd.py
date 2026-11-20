@@ -2370,7 +2370,7 @@ class Server:
                                                   anchor.bridges.depth_of(fid)))
         except Exception as e:          # no decks: the graph follows the ground under bridges
             log.debug("navgraph decks: %s: %s", type(e).__name__, e)
-        # (Germany's mapped nodes too: its junction signs on, the graph's window in Germany)
+        # (Sweden, CIS and Germany: mapped crossings, stop lines and priority nodes)
         de_nodes = designsmod.reads_here(designsmod.enabled(self.dej_on), anchor.frame, (x - w, y - w, x + w, y + w))
         nodes = secrossings.read(self.mapdata, anchor.frame, keys, country=self.country(anchor)) \
             if secrossings.wanted(self.country(anchor), de_nodes) else None
@@ -3239,7 +3239,7 @@ class Server:
         marks = []                  # stall lines along parking aisles (parking.finish_markings adds the lot polygons')
         near_roads = []             # the ground carriageways near the tile (the median barriers': medians.tile_rows)
         nkeys = roadsmod.cells_of_tile(anchor.frame, tx, ty, blockworker.SIGNALS_MARGIN_M)
-        # (Germany's mapped nodes too: its junction signs on, the junctions it decides reach into Germany)
+        # (Sweden, CIS and Germany: mapped crossings, stop lines and priority nodes)
         de_nodes = designsmod.reads_here(designsmod.enabled(self.dej_on), anchor.frame, designsmod.tile_reach(box))
         sign_nodes = secrossings.read(self.mapdata, anchor.frame, nkeys, country=self.country(anchor)) \
             if secrossings.wanted(self.country(anchor), de_nodes) else None
