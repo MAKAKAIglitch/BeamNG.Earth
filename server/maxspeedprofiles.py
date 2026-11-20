@@ -9,9 +9,8 @@ import re
 
 PROFILES = {
     "AM": {"urban": 60, "rural": 90, "motorway": 110, "trunk": 90, "living_street": 20},
-    "AZ": {"urban": 50, "rural": 80, "motorway": 110, "trunk": 80, "living_street": 20,
-           "classes": {"unclassified": 70, "residential": 50}},
-    "BY": {"urban": 60, "rural": 90, "motorway": 110, "trunk": 90, "living_street": 20,
+    "AZ": {"urban": 60, "rural": 90, "motorway": 110, "trunk": 90, "living_street": 20},
+    "BY": {"urban": 60, "rural": 90, "motorway": 120, "trunk": 90, "living_street": 20,
            "classes": {"service": 20}},
     "GE": {"urban": 60, "rural": 90, "motorway": 110, "trunk": 90, "living_street": 20},
     "KG": {"urban": 60, "rural": 90, "motorway": 110, "trunk": 90, "living_street": 20},
