@@ -16,10 +16,10 @@ import dnp
 # colour: the centre line's material; widths in m; patterns (dash, gap) in m. centre_rural / centre_urban: the centre
 # line of a two-way road (None: solid); lane_* the lines between lanes of one direction; edge: the edge line's width;
 # left_edge: the material of a one-way carriageway's left edge (the Americas' yellow) or None (white like the right);
-# double_centre_urban: a town's two-way road gets a double solid centre line (the US practice on arterials) instead of
-# a broken one; double_gap: the space between the two lines of a double line; edge_pattern: a broken edge line (dash,
-# gap) off the main roads; warning: the broken line in place of a double solid one on a narrow road; w_urban: a line's
-# width in town (else w).
+# double_centre_urban: urban double-centre exception; double_centre: national double-solid centre marking;
+# double_gap: space between the two lines; edge_pattern: broken edge line; edge_pattern_rural_only: outside towns only;
+# warning: narrow-road warning line; w_urban: town line width; stop_line_w / yield_*: transverse junction markings;
+# crosswalk_*: crossing widths, speed threshold and zebra texture repeat.
 Style = namedtuple("Style", "centre w w_motorway edge edge_motorway centre_rural centre_urban lane_rural lane_urban "
                             "lane_motorway left_edge double_centre_urban double_gap min_centre_m edge_classes ladder "
                             "edge_pattern warning w_urban double_centre stop_line_w yield_h yield_base yield_gap "
