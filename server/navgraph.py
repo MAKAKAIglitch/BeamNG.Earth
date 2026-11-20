@@ -234,6 +234,18 @@ def road_mph(feats, i, spec, mph=True, at=0.5, country=None, de_on=False):
             from designs import ZONES
             if zone[i] in ZONES:
                 return int(zone[i][3:]) / 1.609344
+    # The road Spec contains OSM's numeric maxspeed as well as symbolic CIS
+    # values resolved by osmtags. Use it for the CIS profiles before class
+    # defaults so the AI and its speed-limit signs agree with the mapped tag.
+    import maxspeedprofiles
+    cc = str(country or "").upper()
+    if cc in maxspeedprofiles.COUNTRIES:
+        mapped = getattr(spec, "kmh", None)
+        if mapped is not None and math.isfinite(float(mapped)) and float(mapped) > 0:
+            return float(mapped) / 1.609344
+        default = maxspeedprofiles.default_kmh(cc, spec)
+        if default is not None:
+            return float(default) / 1.609344
     if country == "US" and spec.cls == "motorway" and not getattr(spec, "link", False):     # (not a ramp)
         state, city = _us_place(feats, i)
         if state in US_MOTORWAY_MPH:
