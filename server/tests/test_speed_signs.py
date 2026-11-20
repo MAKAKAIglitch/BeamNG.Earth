@@ -53,6 +53,17 @@ class CountryProfileSignsTest(unittest.TestCase):
                 self.assertEqual(got, [(0.0, float(kmh))])
 
 
+    def test_belarus_symbolic_and_default_motorway_values_are_distinct(self):
+        from test_roads import features
+        feats = features([[(0, 0), (200, 0)]], ["motorway"])
+        default = SimpleNamespace(kmh=None, cls="motorway", urban=False, oneway=True, lanes=2, link=False)
+        mapped = SimpleNamespace(kmh=110.0, cls="motorway", urban=False, oneway=True, lanes=2, link=False)
+        self.assertEqual(speedsigns._limits(feats, 0, default, False, speedsigns.STYLE_VIENNA, country="BY"),
+                         [(0.0, 120.0)])
+        self.assertEqual(speedsigns._limits(feats, 0, mapped, False, speedsigns.STYLE_VIENNA, country="BY"),
+                         [(0.0, 110.0)])
+
+
 @unittest.skipUnless(getattr(fast._ef, "VERSION", 0) >= speedsigns.KERNEL, "earthfast with the speed-sign kernels")
 class PlaceTest(unittest.TestCase):
     def test_a_sign_where_the_limit_changes_each_way_on_the_driving_side(self):
