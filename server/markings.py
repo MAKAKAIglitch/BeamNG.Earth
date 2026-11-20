@@ -73,7 +73,7 @@ _WHITE = Style(centre="line_white", w=0.12, w_motorway=0.15, edge=0.15, edge_mot
 # exact dimensions and exceptions have been checked against its own current standard.
 # The 2025 Rosavtodor ODM recommends 1/3 m inside built-up areas at <=60 km/h;
     # ordinary roads select 3/9 m and high-speed roads 4/12 m.
-_CIS = Style(centre="line_white", w=0.10, w_motorway=0.15, edge=0.10, edge_motorway=0.20,
+_RU = Style(centre="line_white", w=0.10, w_motorway=0.15, edge=0.10, edge_motorway=0.20,
              centre_rural=(4.0, 12.0), centre_urban=(1.0, 3.0),
              lane_rural=(4.0, 12.0), lane_urban=(1.0, 3.0), lane_motorway=(4.0, 12.0),
              left_edge=None, double_centre_urban=False, double_gap=0.12, min_centre_m=5.5)
@@ -86,7 +86,7 @@ _YELLOW = _WHITE._replace(centre="line_yellow")
 STYLES = {"US": _US, "CA": _CA, "GB": _GB, "IE": _GB, "IM": _GB, "JE": _GB, "GG": _GB, "DE": _DE, "AT": _DE,
           "CH": _DE, "LI": _DE, "LU": _DE, "FR": _FR, "MC": _FR, "BE": _FR, "NL": _NL, "JP": _JP, "AU": _AU, "NZ": _AU,
           "SE": _SE}
-STYLES.update({country: _CIS for country in RUSSIAN_MARKING_COUNTRIES})
+STYLES.update({country: _RU for country in RUSSIAN_MARKING_COUNTRIES})
 # where centre lines are yellow (outside the US and Canada): the Americas, Norway, Finland, South Korea, China, Taiwan,
 # Thailand (research table 4.4)
 YELLOW_CENTRE = {"MX", "GT", "BZ", "HN", "SV", "NI", "CR", "PA", "CU", "DO", "HT", "PR", "JM", "BS", "TT", "CO", "VE",
@@ -106,7 +106,7 @@ def style(country=None, lon=None):
 
 
 def road_style(country=None, lon=None, kmh=None, urban=False, motorway=False):
-    """A road-context style; CIS dash lengths follow the speed bands in GOST R 51256-2018.
+    """A road-context style; Russian dash lengths follow the speed bands in GOST R 51256-2018.
 
     GOST 1.5 uses a 1:3 dash/gap family. In built-up areas at up to 60 km/h,
     the 2025 Rosavtodor ODM recommends 1/3 m; ordinary roads use 3/9 m and
