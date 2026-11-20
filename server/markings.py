@@ -22,7 +22,9 @@ import dnp
 # width in town (else w).
 Style = namedtuple("Style", "centre w w_motorway edge edge_motorway centre_rural centre_urban lane_rural lane_urban "
                             "lane_motorway left_edge double_centre_urban double_gap min_centre_m edge_classes ladder "
-                            "edge_pattern warning w_urban", defaults=(None, False, None, None, None))
+                            "edge_pattern warning w_urban double_centre stop_line_w yield_h yield_base yield_gap "
+                            "crosswalk_min crosswalk_fast",
+                   defaults=(None, False, None, None, None, False, 0.40, 0.70, 0.50, 0.50, 3.0, 4.0))
 
 _US = Style(centre="line_yellow", w=0.12, w_motorway=0.15, edge=0.12, edge_motorway=0.15,
             centre_rural=(3.05, 9.14), centre_urban=(3.05, 9.14), lane_rural=(3.05, 9.14), lane_urban=(3.05, 9.14),
@@ -78,25 +80,57 @@ _RU = Style(centre="line_white", w=0.10, w_motorway=0.15, edge=0.10, edge_motorw
              lane_rural=(4.0, 12.0), lane_urban=(1.0, 3.0), lane_motorway=(4.0, 12.0),
              left_edge=None, double_centre_urban=False, double_gap=0.12, min_centre_m=5.5)
 
-# CIS country profiles. GOST 32953-2014 was adopted by AM, BY, KZ, KG, RU and TJ.
-# Keep separate Style instances for every country so national parameters can evolve independently.
-# For countries without a verified, accessible national dimensional standard, retain the conservative
-# white-marking baseline rather than inventing widths or dash lengths.
+# CIS profiles. A country gets its own Style instance. Exact dimensional values are used only where a
+# current national document was checked; the other profiles retain a conservative white-line baseline until
+# their national technical standards can be verified. Shared numbering does not mean shared dimensions.
 RUSSIAN_MARKING_COUNTRIES = ("RU",)
 CIS_MARKING_COUNTRIES = ("AM", "AZ", "BY", "GE", "KG", "KZ", "MD", "RU", "TJ", "TM", "UA", "UZ")
 _CIS_GOST_32953 = frozenset({"AM", "BY", "KG", "KZ", "RU", "TJ"})
 
-_AM = _RU._replace()
-_AZ = _WHITE._replace()
-_BY = _RU._replace()
-_GE = _WHITE._replace()
-_KG = _RU._replace()
-_KZ = _RU._replace()
-_MD = _WHITE._replace()
-_TJ = _RU._replace()
-_TM = _WHITE._replace()
-_UA = _WHITE._replace()
-_UZ = _WHITE._replace()
+_CIS_BASE = _WHITE._replace(double_centre=True, stop_line_w=0.40, yield_h=0.70, yield_base=0.50,
+                            yield_gap=0.50, crosswalk_min=3.0, crosswalk_fast=4.0)
+_AM = _CIS_BASE._replace()
+_AZ = _CIS_BASE._replace()
+_BY = _CIS_BASE._replace()
+_GE = _CIS_BASE._replace()
+_KG = _CIS_BASE._replace()
+_TJ = _CIS_BASE._replace()
+_TM = _CIS_BASE._replace()
+_UZ = _CIS_BASE._replace()
+
+# Kazakhstan: ST RK 1124-2019 and ST RK 1412-2017. White longitudinal markings;
+# 1.5 dash/gap ratio 1:3, speed-dependent lengths; 1.2 motorway edge 0.20 m;
+# stop line 0.40 m; 1.13 yield triangles 0.50 m base / 0.90 m height.
+_KZ = Style(centre="line_white", w=0.12, w_motorway=0.15, edge=0.12, edge_motorway=0.20,
+            centre_rural=(2.0, 6.0), centre_urban=(1.0, 3.0),
+            lane_rural=(2.0, 6.0), lane_urban=(1.0, 3.0), lane_motorway=(3.0, 9.0),
+            left_edge=None, double_centre_urban=False, double_gap=0.12, min_centre_m=5.5,
+            double_centre=True, stop_line_w=0.40, yield_h=0.90, yield_base=0.50, yield_gap=0.30,
+            crosswalk_min=3.0, crosswalk_fast=4.0)
+
+# Moldova: CP D.02.33:2024 (in force from 2024-03-22), aligned to SM SR 1848-7.
+# The standard specifies 0.15 m ordinary lines, 0.25 m wide motorway edge lines,
+# a 1:2 broken-line family and 0.15 m / 0.10 m spacing for the double solid line.
+_MD = Style(centre="line_white", w=0.15, w_motorway=0.15, edge=0.15, edge_motorway=0.25,
+            centre_rural=(3.0, 6.0), centre_urban=(2.0, 4.0),
+            lane_rural=(3.0, 6.0), lane_urban=(2.0, 4.0), lane_motorway=(3.0, 6.0),
+            left_edge=None, double_centre_urban=False, double_gap=0.10, min_centre_m=5.5,
+            double_centre=True, stop_line_w=0.40, yield_h=0.70, yield_base=0.50, yield_gap=0.40,
+            crosswalk_min=3.0, crosswalk_fast=4.0)
+
+# Ukraine: DSTU 2587:2021. Line widths depend on road category (0.10 / 0.15 / 0.20 m);
+# ordinary 1.5 dash/gap ratio 1:2 with speed bands; 1.3 is the double solid centre marking.
+_UA = Style(centre="line_white", w=0.12, w_motorway=0.20, edge=0.12, edge_motorway=0.20,
+            centre_rural=(3.0, 6.0), centre_urban=(2.0, 4.0),
+            lane_rural=(3.0, 6.0), lane_urban=(2.0, 4.0), lane_motorway=(4.0, 8.0),
+            left_edge=None, double_centre_urban=False, double_gap=0.10, min_centre_m=5.5,
+            double_centre=True, stop_line_w=0.40, yield_h=0.70, yield_base=0.50, yield_gap=0.25,
+            crosswalk_min=4.0, crosswalk_fast=4.0)
+
+# Russia: GOST R 51256-2018 with the speed-sensitive dash family used by the road renderer.
+_RU = _RU._replace(double_centre=True, stop_line_w=0.40, yield_h=0.70, yield_base=0.50,
+                   yield_gap=0.50, crosswalk_min=3.0, crosswalk_fast=4.0)
+
 CIS_STYLES = {
     "AM": _AM, "AZ": _AZ, "BY": _BY, "GE": _GE, "KG": _KG, "KZ": _KZ,
     "MD": _MD, "RU": _RU, "TJ": _TJ, "TM": _TM, "UA": _UA, "UZ": _UZ,
@@ -127,21 +161,31 @@ def style(country=None, lon=None):
 
 
 def road_style(country=None, lon=None, kmh=None, urban=False, motorway=False):
-    """A road-context style; Russian dash lengths follow the speed bands in GOST R 51256-2018.
-
-    GOST 1.5 uses a 1:3 dash/gap family. In built-up areas at up to 60 km/h,
-    the 2025 Rosavtodor ODM recommends 1/3 m; ordinary roads use 3/9 m and
-    roads above 60 km/h use 4/12 m. Missing speed uses a context-based fallback.
-    """
+    """A road-context style with national dash/gap families where their current dimensions are verified."""
+    c = str(country or "").strip().upper()
     st = style(country, lon)
-    if str(country or "").strip().upper() not in RUSSIAN_MARKING_COUNTRIES:
-        return st
-    if kmh is None:
-        pattern = (1.0, 3.0) if urban else ((4.0, 12.0) if motorway else (3.0, 9.0))
-    elif float(kmh) > 60.0:
-        pattern = (4.0, 12.0)
+    if c == "RU":
+        if kmh is None:
+            pattern = (1.0, 3.0) if urban else ((4.0, 12.0) if motorway else (3.0, 9.0))
+        elif float(kmh) > 60.0:
+            pattern = (4.0, 12.0)
+        else:
+            pattern = (1.0, 3.0) if urban else (3.0, 9.0)
+    elif c == "KZ":
+        if kmh is None:
+            pattern = (1.0, 3.0) if urban else ((3.0, 9.0) if motorway else (2.0, 6.0))
+        elif float(kmh) > 60.0:
+            pattern = (4.0, 12.0) if float(kmh) > 90.0 else (3.0, 9.0)
+        else:
+            pattern = (1.0, 3.0) if urban else (2.0, 6.0)
+    elif c == "UA":
+        speed = 50.0 if kmh is None and urban else (70.0 if kmh is None else float(kmh))
+        pattern = (2.0, 4.0) if speed <= 50.0 else ((3.0, 6.0) if speed <= 90.0 else (4.0, 8.0))
+    elif c == "MD":
+        speed = 50.0 if kmh is None and urban else (70.0 if kmh is None else float(kmh))
+        pattern = (2.0, 4.0) if urban or speed <= 60.0 else (3.0, 6.0)
     else:
-        pattern = (1.0, 3.0) if urban else (3.0, 9.0)
+        return st
     return st._replace(centre_rural=pattern, centre_urban=pattern,
                        lane_rural=pattern, lane_urban=pattern, lane_motorway=pattern)
 
@@ -471,12 +515,10 @@ def wait_lines(arms, crosswalks, left_hand=False):
     return out, cuts
 
 
-def give_way_lines(arms, crosswalks, left_hand=False):
-    """(triangles [(3, 3) array], indices of the crosswalks rows that go) of arms [(fid, spec, centreline from the
-    junction, half the crossing road's width)] (furniture.give_way_arms): across the lanes coming in, points to the
-    drivers; past a crosswalk on the arm, and in place of its stop line (M13 is for B2 and signals: 4 kap. 1, 3 §§)."""
+def give_way_lines(arms, crosswalks, left_hand=False, height=M14_H, base=M14_BASE, gap=M14_GAP):
+    """Yield triangles across incoming lanes, with dimensions supplied by the country's marking profile."""
     teeth, gone = [], set()
-    pitch = M14_BASE + M14_GAP
+    pitch = base + gap
     for _, spec, line, wide in arms:
         s = np.r_[0.0, np.cumsum(dnp.hypot(*np.diff(line[:, :2], axis=0).T))]
         if s[-1] < 1.0:
@@ -491,13 +533,13 @@ def give_way_lines(arms, crosswalks, left_hand=False):
                 gone.add(j)
                 at = max(at, float(st[i]))
         at = _past_crossing(along, st, crosswalks, spec, at, M14_CROSSWALK_M, CAR_ROOM_M)
-        if at + M14_H + 2.0 > s[-1]:
+        if at + height + 2.0 > s[-1]:
             continue                        # (a stub: nowhere to stop)
         c, t, n, (lo, hi) = _way_in(line, s, at, spec, left_hand)
-        count = int((hi - lo + M14_GAP) // pitch)
+        count = int((hi - lo + gap) // pitch)
         for k in range(count):
             mid = c[:2] + n * ((lo + hi) / 2 + (k - (count - 1) / 2) * pitch)
-            tri = [mid + n * M14_BASE / 2, mid - n * M14_BASE / 2, mid - t * M14_H]
+            tri = [mid + n * base / 2, mid - n * base / 2, mid - t * height]
             teeth.append(np.c_[np.array(tri), np.full(3, c[2])])
     return teeth, gone
 
