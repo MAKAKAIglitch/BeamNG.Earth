@@ -54,7 +54,6 @@ COLUMNS = {
     "maxspeed": (f"TRY_CAST(regexp_extract(maxspeed, {_NUM}, 1) AS DOUBLE) * "
                  "CASE WHEN maxspeed LIKE '%mph%' THEN 1.609344 ELSE 1.0 END"),
     "maxspeed_tag": "maxspeed",
-    "motorroad": "motorroad",
     "sidewalk": "sidewalk",
     "lit": "lit",
     "smoothness": "smoothness",
@@ -73,16 +72,16 @@ COLUMNS = {
     "bx0": "bbox.xmin", "by0": "bbox.ymin", "bx1": "bbox.xmax", "by1": "bbox.ymax",
 }
 TEXT_COLUMNS = {"sidewalk", "lit", "smoothness", "osm_surface", "osm_oneway", "name", "osm_highway", "lane_hw",
-                "maxspeed_tag", "motorroad"}
+                "maxspeed_tag"}
 INT_COLUMNS = {"lanes", "osm_layer"}
 GROUPS_FILE = overture.GROUPS_FILE     # the version's parsed row groups (OsmTags._groups)
 TABLE_DIR = "rg"        # a row group's decoded ways (OsmTags._table), in the version's folder
 TABLE_MEM = 6           # decoded row groups kept in memory (~6 MB each; a place's cells share 3-5)
 EXACT32 = {"bx0", "by0", "bx1", "by1", "lanes", "osm_layer"}   # float32 (the file's bbox; small integers)
 TABLE_WAIT_S = 60.0     # a row group another process decodes is waited for this long
-USED = {"id", "bbox", "lanes", "width", "maxspeed", "motorroad", "sidewalk", "lit", "smoothness", "surface", "oneway", "layer", "name"}
+USED = {"id", "bbox", "lanes", "width", "maxspeed", "sidewalk", "lit", "smoothness", "surface", "oneway", "layer", "name"}
 FLOATS = ("lanes", "width", "maxspeed", "osm_layer")
-TEXTS = ("sidewalk", "lit", "smoothness", "osm_surface", "osm_oneway", "osm_highway", "maxspeed_tag", "motorroad")
+TEXTS = ("sidewalk", "lit", "smoothness", "osm_surface", "osm_oneway", "osm_highway", "maxspeed_tag")
 GEOMETRY_MARGIN_M = 6.0    # m round a tagged highway's bbox a replaced way's line may reach (roadlanes.join's 6 m)
 UNBUILT = ("construction", "proposed")      # osm_highway's values: not drawn (roads.unbuilt)
 NAME_MATCH_M = 25.0     # m a segment's middle may lie outside the bbox of the same-named way it takes the tags of
@@ -271,8 +270,7 @@ class OsmTags:
         def load():
             try:
                 with np.load(path, allow_pickle=False) as f:
-                    if ("lane_hw_ok" not in f.files or "bus" not in f.files or "maxspeed_tag_ok" not in f.files
-                        or "motorroad_ok" not in f.files):  # decoded before symbolic speed tags / motorroad
+                    if "lane_hw_ok" not in f.files or "bus" not in f.files or "maxspeed_tag_ok" not in f.files:  # decoded before symbolic speed tags
                         return None
                     return {c: f[c] for c in f.files}
             except (OSError, ValueError, KeyError, EOFError, zipfile.BadZipFile):    # (damaged: decoded again)
