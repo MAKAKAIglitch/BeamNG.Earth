@@ -88,7 +88,8 @@ def build_tile(md, frame, aid, tx, ty, elev, out_dir, vfs_dir, urban=None, width
     # German Autobahn signs: a tile in Germany (real borders, behind a box) whose shards carry the German block
     german = _german(source, frame, tx, ty)
     autobahn = _autobahn(md, frame, tx, ty, elev, context, left_hand) if german else None
-    speeds = _speeds(frame, tx, ty, elev, context, decks, left_hand, mph, speedsigns.style(country, us), dej, towns)
+    speeds = _speeds(frame, tx, ty, elev, context, decks, left_hand, mph, speedsigns.style(country, us), dej, towns,
+                     country=country)
     dir_mesh, dir_faces = (_dirs(md, frame, tx, ty, elev, context, decks, left_hand, mph, out_dir, vfs_dir, aid,
                                  autobahn=german) if dirs else (None, {}))
     rsign_mesh = _rsigns(md, frame, tx, ty, elev, context, decks, left_hand, mph, country) if rsigns else None
@@ -123,7 +124,7 @@ def build_tile(md, frame, aid, tx, ty, elev, out_dir, vfs_dir, urban=None, width
 _warned = -float('inf')
 
 
-def _speeds(frame, tx, ty, elev, context, decks, left_hand, mph, face, de_on=False, towns=None):
+def _speeds(frame, tx, ty, elev, context, decks, left_hand, mph, face, de_on=False, towns=None, country=None):
     """speedsigns.build_tile, or None: optional scenery never stops the other signs (towns: the town signs' towns,
     townentry.Towns.town_state, when they are on)."""
     global _warned
