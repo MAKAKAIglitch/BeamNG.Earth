@@ -44,7 +44,8 @@ class StyleTest(unittest.TestCase):
         expected = {"AM", "AZ", "BY", "GE", "KG", "KZ", "MD", "RU", "TJ", "TM", "UA", "UZ"}
         self.assertEqual(set(markings.CIS_MARKING_COUNTRIES), expected)
         self.assertEqual(set(markings.CIS_STYLES), expected)
-        self.assertEqual(set(markings.CIS_STYLES), expected)
+        self.assertEqual(len({id(v) for v in markings.CIS_STYLES.values()}), len(expected),
+                         "each country must own an independent profile object")
         for country in expected:
             with self.subTest(country=country):
                 self.assertIs(markings.style(country), markings.CIS_STYLES[country])
