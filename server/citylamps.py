@@ -9,7 +9,7 @@ arm is overhead), both of furniture.py, which takes the tables from here.
 """
 import hashlib
 
-VERSION = "city-lamps-v2-cis-concrete"                    # (in the poles profile token: tiles made without them are made again)
+VERSION = "city-lamps-v2-russia-concrete"                    # (in the poles profile token: tiles made without them are made again)
 G_STEEL, G_CONCRETE = "eu_lamp_steel", "eu_lamp_concrete"
 GROUPS = (G_STEEL, G_CONCRETE)
 HEIGHT = 9.0                                # the catalog height (trees.lua): a row's height over it is its scale
@@ -17,7 +17,7 @@ HEAD = (2.10, 0.0, 8.77)                    # the luminaire's underside (tools/b
 # the share of concrete posts by country (the rest steel): Germany lights with steel, the post-Soviet and Visegrad
 # towns have many concrete ones (the user's photo of Vinnytsia: a concrete post with a bracket lamp)
 CONCRETE_SHARE = {"DE": 0.1, "AT": 0.1, "CH": 0.0, "NL": 0.1, "BE": 0.1, "LU": 0.1, "DK": 0.1, "SE": 0.1, "NO": 0.1,
-                  "FI": 0.1, "GB": 0.15, "IE": 0.15, "FR": 0.3, "ES": 0.25, "IT": 0.25, "PT": 0.25, "RU": 0.8, "BY": 0.8, "UA": 0.75, "MD": 0.75, "GE": 0.7, "AM": 0.7, "AZ": 0.7, "KZ": 0.8, "KG": 0.8, "TJ": 0.75, "TM": 0.8, "UZ": 0.75}
+                  "FI": 0.1, "GB": 0.15, "IE": 0.15, "FR": 0.3, "ES": 0.25, "IT": 0.25, "PT": 0.25, "RU": 0.8}
 DEFAULT_SHARE = 0.55
 COLLISION_BOXES = {
     G_STEEL: (HEIGHT, ((-0.14, -0.14, -0.2, 0.14, 0.14, 7.9),
