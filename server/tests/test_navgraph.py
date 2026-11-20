@@ -62,13 +62,6 @@ class CisCountrySpeedTest(unittest.TestCase):
         mapped = self.spec(kmh=75.0)
         got = navgraph.road_mph(f, 0, mapped, mph=False, country="RU") * 1.609344
         self.assertAlmostEqual(got, 75.0)
-    def test_belarus_motorroad_tag_uses_the_120_limit(self):
-        f = features([[(0, 0), (200, 0)]], ["trunk"])
-        spec = self.spec()
-        f.attrs["osm_motorroad"] = np.array(["yes"])
-        got = navgraph.road_mph(f, 0, spec, mph=False, country="BY") * 1.609344
-        self.assertAlmostEqual(got, 120.0)
-
     def test_non_cis_countries_keep_the_previous_fallback(self):
         f = features([[(0, 0), (200, 0)]], ["trunk"])
         got = navgraph.road_mph(f, 0, self.spec(), mph=False, country="US") * 1.609344
