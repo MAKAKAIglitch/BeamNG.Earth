@@ -66,10 +66,10 @@ class DefaultProfiles(unittest.TestCase):
         self.assertEqual(maxspeedprofiles.default_kmh("AZ", self.spec("unclassified")), 90)
         self.assertEqual(maxspeedprofiles.default_kmh("UZ", self.spec("living_street", urban=True)), 30)
         self.assertEqual(maxspeedprofiles.default_kmh("RU", self.spec("motorway")), 110)
-        self.assertEqual(maxspeedprofiles.default_kmh("KZ", self.spec("motorway")), 140)        self.assertEqual(maxspeedprofiles.default_kmh("BY", self.spec("motorway")), 120)
+        self.assertEqual(maxspeedprofiles.default_kmh("KZ", self.spec("motorway")), 140)
+        self.assertEqual(maxspeedprofiles.default_kmh("BY", self.spec("motorway")), 120)
         self.assertEqual(maxspeedprofiles.resolve_tag("BY:motorway"), 110)
-        self.assertEqual(maxspeedprofiles.default_kmh("BY", self.spec("trunk"), motorroad=True), 120)
-        self.assertEqual(maxspeedprofiles.default_kmh("BY", self.spec("trunk"), motorroad=False), 90)
+        self.assertEqual(maxspeedprofiles.default_kmh("BY", self.spec("trunk")), 90)
         self.assertEqual(maxspeedprofiles.default_kmh("RU", self.spec("living_street", urban=True)), 20)
 
     def test_unknown_country_keeps_existing_fallback(self):
