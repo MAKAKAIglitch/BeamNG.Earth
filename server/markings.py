@@ -109,12 +109,12 @@ _KZ = Style(centre="line_white", w=0.12, w_motorway=0.15, edge=0.12, edge_motorw
             double_centre=True, stop_line_w=0.40, yield_h=0.90, yield_base=0.50, yield_gap=0.50,
             crosswalk_min=2.5, crosswalk_fast=4.0, crosswalk_fast_kmh=60.0)
 
-# Moldova: CP D.02.33:2024 (in force from 2024-03-22), aligned to SM SR 1848-7.
-# The standard specifies 0.15 m ordinary lines, 0.25 m wide motorway edge lines,
-# a 1:2 broken-line family and 0.15 m / 0.10 m spacing for the double solid line.
-_MD = Style(centre="line_white", w=0.15, w_motorway=0.15, edge=0.15, edge_motorway=0.25,
-            centre_rural=(3.0, 6.0), centre_urban=(2.0, 4.0),
-            lane_rural=(3.0, 6.0), lane_urban=(2.0, 4.0), lane_motorway=(3.0, 6.0),
+# Moldova: CP D.02.33:2024 (effective 2024-03-22), Appendix R. It specifies 0.15 m narrow lines,
+# 0.25 m wide motorway markings, a 0.15 m / 0.10 m double line, 0.40 m stop lines,
+# 0.40 m give-way dashes (0.80 / 0.40), and crossing lengths of at least 3 m below 50 km/h / 4 m above.
+_MD = Style(centre="line_white", w=0.15, w_motorway=0.25, edge=0.15, edge_motorway=0.25,
+            centre_rural=(3.0, 9.0), centre_urban=(3.0, 1.0),
+            lane_rural=(3.0, 9.0), lane_urban=(3.0, 1.0), lane_motorway=(3.0, 6.0),
             left_edge=None, double_centre_urban=False, double_gap=0.10, min_centre_m=5.5,
             double_centre=True, stop_line_w=0.40, yield_h=0.70, yield_base=0.50, yield_gap=0.50,
             crosswalk_min=3.0, crosswalk_fast=4.0, crosswalk_fast_kmh=50.0,
@@ -185,7 +185,10 @@ def road_style(country=None, lon=None, kmh=None, urban=False, motorway=False):
         pattern = (2.0, 4.0) if speed <= 50.0 else ((3.0, 6.0) if speed <= 90.0 else (4.0, 8.0))
     elif c == "MD":
         speed = 50.0 if kmh is None and urban else (70.0 if kmh is None else float(kmh))
-        pattern = (2.0, 4.0) if urban or speed <= 60.0 else (3.0, 6.0)
+        if urban:
+            pattern = (3.0, 1.0) if speed <= 60.0 else (9.0, 3.0)
+        else:
+            pattern = (4.0, 12.0) if speed > 60.0 else (3.0, 9.0)
     else:
         return st
     return st._replace(centre_rural=pattern, centre_urban=pattern,
