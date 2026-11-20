@@ -42,11 +42,9 @@ M16_SIDE, M16_GAP, M16_RIDE = 0.50, 0.50, 2.5
 
 
 def wanted(country, de=False):
-    """Whether a place's road tiles and road graph read the map's crossing, stop and give-way nodes (read): Sweden's
-    always (its paint and signs are the map's), Germany's when its junction signs are on (de: the setting on and the
-    junctions the tile decides, or the graph's window, reaching into Germany: designs.reads_here; the country code
-    alone is the nearest airport's). Nowhere else: no read, the guesses as before."""
-    return str(country or "").upper() == "SE" or bool(de)
+    """Whether road tiles read mapped crossings, stop lines and priority nodes for this country."""
+    c = str(country or "").upper()
+    return c == "SE" or c in {"AM", "AZ", "BY", "GE", "KG", "KZ", "MD", "RU", "TJ", "TM", "UA", "UZ"} or bool(de)
 
 
 def _marks(tags):
@@ -170,7 +168,7 @@ def _squares(mid, u, n, half, z):
     return out
 
 
-def place(roads, found, on=None):
+def place(roads, found, on=None, crosswalk_min=M15_L, crosswalk_fast=M15_FAST_L):
     """(crosswalks [{"a", "b", "w"[, "paint": False]}], squares [(4, 3)], ramps {(fid, side): [(point, u, t0, t1)]}) of the
     crossing nodes in found (nodes) on the paved roads in roads [(fid, spec, centreline (k, 3), lon)]: square to the road
     from kerb to kerb, a crosswalk without paint standing for M16's band so the lines stop at it too. Crossing and cycle
@@ -209,7 +207,7 @@ def place(roads, found, on=None):
         half = spec.width / 2
         for side in (1, -1):
             ramps.setdefault((fid, side), []).append((c.copy(), u, -M15_L / 2, M15_L / 2))
-        long_ = M15_FAST_L if (spec.kmh or 0.0) > M15_FAST_KMH else M15_L
+        long_ = max(float(crosswalk_fast if (spec.kmh or 0.0) > M15_FAST_KMH else crosswalk_min), M15_L)
         band = M16_RIDE + 2 * M16_SIDE              # M16's: from the outer edge of one row to the other's
         at_m15 = -band / 2 if what == M15 | M16 else 0.0
         at_m16 = long_ / 2 if what == M15 | M16 else 0.0
