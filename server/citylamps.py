@@ -14,8 +14,8 @@ G_STEEL, G_CONCRETE = "eu_lamp_steel", "eu_lamp_concrete"
 GROUPS = (G_STEEL, G_CONCRETE)
 HEIGHT = 9.0                                # the catalog height (trees.lua): a row's height over it is its scale
 HEAD = (2.10, 0.0, 8.77)                    # the luminaire's underside (tools/build_city_lamps.py LENS_AT)
-# the share of concrete posts by country (the rest steel): Germany lights with steel, the post-Soviet and Visegrad
-# towns have many concrete ones (the user's photo of Vinnytsia: a concrete post with a bracket lamp)
+# the share of concrete posts by country (the rest steel): Germany lights with steel; Russian towns have many
+# concrete posts (the user's photo of Vinnytsia: a concrete post with a bracket lamp)
 CONCRETE_SHARE = {"DE": 0.1, "AT": 0.1, "CH": 0.0, "NL": 0.1, "BE": 0.1, "LU": 0.1, "DK": 0.1, "SE": 0.1, "NO": 0.1,
                   "FI": 0.1, "GB": 0.15, "IE": 0.15, "FR": 0.3, "ES": 0.25, "IT": 0.25, "PT": 0.25, "RU": 0.8}
 DEFAULT_SHARE = 0.55
