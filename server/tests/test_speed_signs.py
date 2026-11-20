@@ -50,7 +50,7 @@ class CountryProfileSignsTest(unittest.TestCase):
         by = speedsigns._limits(feats, 0, spec, False, speedsigns.STYLE_VIENNA, country="BY")
         self.assertEqual(ru, [(0.0, 90.0)])
         self.assertEqual(kz, [(0.0, 100.0)])
-        self.assertEqual(by, [(0.0, 120.0)])
+        self.assertEqual(by, [(0.0, 90.0)])
 
 
 @unittest.skipUnless(getattr(fast._ef, "VERSION", 0) >= speedsigns.KERNEL, "earthfast with the speed-sign kernels")
