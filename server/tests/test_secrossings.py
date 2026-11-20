@@ -193,6 +193,13 @@ class PlaceTest(unittest.TestCase):
                                         crosswalk_min=3.0, crosswalk_fast=4.0, crosswalk_fast_kmh=50.0)
         self.assertEqual(walks[0]["w"], 4.0)
 
+    def test_kazakhstan_fast_crossing_is_strictly_over_four_metres(self):
+        fast = road("fast", kmh=70.0)
+        walks, _, _ = secrossings.place([fast], found((50.0, 0.0, secrossings.M15)),
+                                        crosswalk_min=2.5, crosswalk_fast=4.5,
+                                        crosswalk_urban_min=2.5, crosswalk_fast_kmh=60.0)
+        self.assertEqual(walks[0]["w"], 4.5)
+
     def test_unmarked_is_kerbs_and_no_paint(self):
         walks, squares, ramps = secrossings.place([road("a")], found((50.0, 0.0, 0)))
         self.assertEqual((walks, squares), ([], []))
