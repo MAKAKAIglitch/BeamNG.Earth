@@ -11694,6 +11694,7 @@ def build_tile(frame, tx, ty, cells, elev, urban_fn=None, walks=None, bridges=No
         import markings as _cis_marks
         import secrossings as _cx
         st = _cis_marks.style(line_country, roads[0][3] if roads else None)
+        crosswalk_look = dict(junctions.CROSSWALK, tl=st.crosswalk_tl)
         if nodes is not None:
             crosswalks, squares, cw_ramps = _cx.place(
                 roads, nodes, crosswalk_min=st.crosswalk_min, crosswalk_fast=st.crosswalk_fast,
