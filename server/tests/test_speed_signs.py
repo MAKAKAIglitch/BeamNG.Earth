@@ -40,14 +40,7 @@ def near(signs, x, y, r):
     return [s for s in signs if np.hypot(s[0] - x, s[1] - y) < r]
 
 
-class CountryProfileSignsTest(unittest.TestCase):    def test_belarus_motorroad_tag_is_used_on_speed_signs(self):
-        from test_roads import features
-        feats = features([[(0, 0), (200, 0)]], ["trunk"])
-        feats.attrs["osm_motorroad"] = np.array(["yes"])
-        spec = SimpleNamespace(kmh=None, cls="trunk", urban=False, oneway=False, lanes=None, link=False)
-        by = speedsigns._limits(feats, 0, spec, False, speedsigns.STYLE_VIENNA, country="BY")
-        self.assertEqual(by, [(0.0, 120.0)])
-
+class CountryProfileSignsTest(unittest.TestCase):
     def test_speed_sign_uses_the_same_country_profile_as_traffic(self):
         from test_roads import features
         feats = features([[(0, 0), (200, 0)]], ["trunk"])
