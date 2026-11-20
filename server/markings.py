@@ -23,9 +23,10 @@ import dnp
 Style = namedtuple("Style", "centre w w_motorway edge edge_motorway centre_rural centre_urban lane_rural lane_urban "
                             "lane_motorway left_edge double_centre_urban double_gap min_centre_m edge_classes ladder "
                             "edge_pattern warning w_urban double_centre stop_line_w yield_h yield_base yield_gap "
-                            "crosswalk_min crosswalk_fast crosswalk_urban_min crosswalk_fast_kmh yield_dash yield_line_w crosswalk_tl",
+                            "crosswalk_min crosswalk_fast crosswalk_urban_min crosswalk_fast_kmh yield_dash yield_line_w crosswalk_tl "
+                            "edge_pattern_rural_only",
                    defaults=(None, False, None, None, None, False, 0.40, 0.70, 0.50, 0.50, 3.0, 4.0,
-                             None, 60.0, None, 0.40, 4.8))
+                             None, 60.0, None, 0.40, 4.8, False))
 
 _US = Style(centre="line_yellow", w=0.12, w_motorway=0.15, edge=0.12, edge_motorway=0.15,
             centre_rural=(3.05, 9.14), centre_urban=(3.05, 9.14), lane_rural=(3.05, 9.14), lane_urban=(3.05, 9.14),
@@ -119,7 +120,8 @@ _MD = Style(centre="line_white", w=0.15, w_motorway=0.25, edge=0.15, edge_motorw
             left_edge=None, double_centre_urban=False, double_gap=0.10, min_centre_m=5.5,
             double_centre=True, stop_line_w=0.40, yield_h=0.70, yield_base=0.50, yield_gap=0.50,
             crosswalk_min=3.0, crosswalk_fast=4.0, crosswalk_fast_kmh=50.0,
-            yield_dash=(0.80, 0.40), yield_line_w=0.40)
+            yield_dash=(0.80, 0.40), yield_line_w=0.40, edge_pattern=(1.0, 1.0),
+            edge_pattern_rural_only=True)
 
 # Ukraine: DSTU 2587:2021. Line widths depend on road category (0.10 / 0.15 / 0.20 m);
 # ordinary 1.5 dash/gap ratio 1:2 with speed bands; 1.3 is the double solid centre marking.
