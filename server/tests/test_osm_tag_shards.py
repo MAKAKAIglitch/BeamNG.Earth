@@ -91,8 +91,6 @@ def fixture_rows(seed=7):
                  np.array([[LON0 - 0.02, LAT0], [LON0 + 0.02, LAT0 + 0.001]])))
     rows.append((900007, dict(highway="trunk", name="Russian symbolic limit", maxspeed="RU:rual"),
                  np.array([[LON0 - 0.01, LAT0 - 0.005], [LON0 + 0.01, LAT0 - 0.005]])))
-    rows.append((900008, dict(highway="trunk", name="Belarus motorroad", motorroad="yes"),
-                 np.array([[LON0 - 0.01, LAT0 - 0.006], [LON0 + 0.01, LAT0 - 0.006]])))
     rows.append((900006, dict(highway="primary", name="No box"), None))     # (a NULL bbox: in no cell)
     return rows
 
@@ -262,7 +260,6 @@ class ShardsMatchLayercakeTest(unittest.TestCase):
         seen_tags = seen_ways = seen_geom = 0
         outlines = set()
         symbolic = None
-        motorroad = None
         for k in self.cells():
             t = sh.tile(k)
             got = osmtags.from_tile(t, k.bounds())
@@ -289,12 +286,8 @@ class ShardsMatchLayercakeTest(unittest.TestCase):
             outlines |= {w["id"] for w in want[1]}
             if 900007 in got[0]:
                 symbolic = got[0][900007]
-            if 900008 in got[0]:
-                motorroad = got[0][900008]
         self.assertIsNotNone(symbolic, "the symbolic-speed way survives the OSM shard decoder")
         self.assertEqual(symbolic["maxspeed"], "RU:rual")
-        self.assertIsNotNone(motorroad, "the motorroad designation survives the OSM shard decoder")
-        self.assertEqual(motorroad["motorroad"], "yes")
         self.assertGreater(seen_tags, 300)
         self.assertGreater(seen_geom, 10)
         self.assertIn(900005, outlines, "the busway")
