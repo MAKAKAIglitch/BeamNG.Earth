@@ -6493,10 +6493,10 @@ def extras(spec, pts, lon, left_hand=False, country=None, osm=None, ws=None, shi
         # the right edge white; a one-way carriageway's left edge yellow where the country says so (MUTCD 3B.09:
         # divided roads, ramps); wider on motorways (TSRGD 1012, RMS: 0.20-0.30 m)
         # Sweden: broken except on motorways, a dual carriageway and a 2+1 road
-        wide = motorway or (st.edge_pattern is not None and spec.oneway and not urban)
+        wide = motorway or (sweden and st.edge_pattern is not None and spec.oneway and not urban)
         ew = markings.MOTESFRI_EDGE_W if barrier else st.edge_motorway if wide else (st.w_urban or st.edge) if urban \
             else st.edge
-        epat = None if wide or barrier else st.edge_pattern
+        epat = None if wide or barrier or (st.edge_pattern_rural_only and urban) else st.edge_pattern
         travel_left = 1 if getattr(spec, "dir", 0) >= 0 else -1      # (dir < 0: one way against the line)
         # (VGU 2024 table 12.5, mötesfri väg: left 0.30 m, right 0.20 m: a 2+1 road's carriageway, by its one or two lanes)
         pair = sweden and spec.oneway and not motorway and not urban and (spec.lanes or 3) <= 2
