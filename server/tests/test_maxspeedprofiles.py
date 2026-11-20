@@ -6,6 +6,7 @@ from types import SimpleNamespace
 
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
 import maxspeedprofiles  # noqa: E402
+import navgraph  # noqa: E402
 
 
 class SymbolicTags(unittest.TestCase):
@@ -37,6 +38,23 @@ class SymbolicTags(unittest.TestCase):
         for value in (None, "", "90", "RU:unknown", "XX:rural", "RU:rualish", "RU:rural;RU:urban"):
             with self.subTest(value=value):
                 self.assertIsNone(maxspeedprofiles.resolve_tag(value))
+
+    def test_symbolic_osm_tag_drives_speed_sign_without_tile_country(self):
+        # A road tile may have no country context at a border. The OSM
+        # symbolic tag itself is authoritative for its own national profile.
+        expected = {code: row["rural"] for code, row in maxspeedprofiles.PROFILES.items()}
+        for code, kmh in expected.items():
+            with self.subTest(country=code):
+                feats = SimpleNamespace(attrs={"osm_maxspeed_tag": [f"{code}:rural"]}, rules={})
+                spec = SimpleNamespace(cls="trunk", kmh=100.0, urban=False, link=False)
+                got = navgraph.road_mph(feats, 0, spec, mph=False, country=None) * 1.609344
+                self.assertAlmostEqual(got, kmh, places=6)
+
+    def test_russian_legacy_tag_drives_ninety_kmh_sign(self):
+        feats = SimpleNamespace(attrs={"osm_maxspeed_tag": ["ru:rual"]}, rules={})
+        spec = SimpleNamespace(cls="trunk", kmh=100.0, urban=False, link=False)
+        got = navgraph.road_mph(feats, 0, spec, mph=False, country=None) * 1.609344
+        self.assertAlmostEqual(got, 90.0, places=6)
 
 
 class DefaultProfiles(unittest.TestCase):
