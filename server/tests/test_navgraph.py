@@ -40,7 +40,7 @@ class CisCountrySpeedTest(unittest.TestCase):
 
     def test_traffic_uses_each_cis_country_profile(self):
         f = features([[(0, 0), (200, 0)]], ["trunk"])
-        expected = {"RU": 90, "BY": 120, "UA": 90, "KZ": 100, "KG": 90, "TJ": 90,
+        expected = {"RU": 90, "BY": 90, "UA": 90, "KZ": 100, "KG": 90, "TJ": 90,
                     "TM": 90, "UZ": 100, "MD": 90, "GE": 90, "AM": 90, "AZ": 90}
         for country, kmh in expected.items():
             with self.subTest(country=country):
@@ -53,6 +53,9 @@ class CisCountrySpeedTest(unittest.TestCase):
         self.assertAlmostEqual(navgraph.road_mph(f, 0, divided, mph=False, country="KZ") * 1.609344, 110)
         self.assertAlmostEqual(navgraph.road_mph(f, 0, divided, mph=False, country="UA") * 1.609344, 110)
         self.assertAlmostEqual(navgraph.road_mph(f, 0, divided, mph=False, country="RU") * 1.609344, 90)
+        primary = self.spec(cls="primary", oneway=True, lanes=2)
+        self.assertAlmostEqual(navgraph.road_mph(f, 0, primary, mph=False, country="KZ") * 1.609344, 110)
+        self.assertAlmostEqual(navgraph.road_mph(f, 0, primary, mph=False, country="UA") * 1.609344, 110)
 
     def test_mapped_numeric_limit_precedes_country_default(self):
         f = features([[(0, 0), (200, 0)]], ["trunk"])
