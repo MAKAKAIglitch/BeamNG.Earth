@@ -180,11 +180,16 @@ class PlaceTest(unittest.TestCase):
                                         crosswalk_min=4.0, crosswalk_fast=4.0)
         self.assertEqual(walks[0]["w"], 4.0)
 
-    def test_urban_crosswalk_minimum_can_differ_from_rural(self):
-        urban = road("urban", kmh=40.0)
-        walks, _, _ = secrossings.place([urban], found((50.0, 0.0, secrossings.M15)),
+    def test_urban_local_crosswalk_minimum_can_differ_from_public_roads(self):
+        local = road("local", cls="residential", kmh=40.0)
+        walks, _, _ = secrossings.place([local], found((50.0, 0.0, secrossings.M15)),
                                         crosswalk_min=4.0, crosswalk_fast=4.0, crosswalk_urban_min=2.5)
         self.assertEqual(walks[0]["w"], 2.5)
+
+        arterial = road("arterial", cls="primary", kmh=40.0)
+        walks, _, _ = secrossings.place([arterial], found((50.0, 0.0, secrossings.M15)),
+                                        crosswalk_min=4.0, crosswalk_fast=4.0, crosswalk_urban_min=2.5)
+        self.assertEqual(walks[0]["w"], 4.0)
 
     def test_country_speed_threshold_selects_fast_crosswalk_width(self):
         fast = road("fast", kmh=55.0)
