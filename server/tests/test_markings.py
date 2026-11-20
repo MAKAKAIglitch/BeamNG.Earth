@@ -82,6 +82,10 @@ class StyleTest(unittest.TestCase):
         self.assertAlmostEqual(md.double_gap, 0.10)
         self.assertEqual(markings.road_style("MD", kmh=50).centre_rural, (2.0, 4.0))
         self.assertEqual(markings.road_style("MD", kmh=70).centre_rural, (3.0, 6.0))
+        self.assertEqual(md.yield_dash, (0.80, 0.40))
+        self.assertAlmostEqual(md.yield_line_w, 0.40)
+        self.assertEqual(ua.crosswalk_urban_min, 2.5)
+        self.assertEqual(ua.crosswalk_min, 4.0)
 
     def test_cis_profiles_enable_double_centre_lines(self):
         for country in markings.CIS_MARKING_COUNTRIES:
@@ -289,6 +293,14 @@ class GiveWayLineTest(unittest.TestCase):
         pts, _ = markings.give_way_lines([self.arm()], [], height=0.90, base=0.50, gap=0.30)
         self.assertTrue(pts)
         self.assertAlmostEqual(np.ptp(np.concatenate(pts)[:, 1]), 0.90, 6)
+
+    def test_national_dashed_yield_line_is_tessellated_into_triangles(self):
+        teeth, _ = markings.give_way_lines([self.arm()], [], dash=(0.80, 0.40), line_width=0.40)
+        self.assertEqual(len(teeth) % 2, 0)
+        self.assertGreaterEqual(len(teeth), 2)
+        for tri in teeth:
+            self.assertEqual(tri.shape, (3, 3))
+            self.assertAlmostEqual(float(np.ptp(tri[:, 1])), 0.40, 6)
 
     def test_left_hand_and_one_way(self):
         self.assertTrue((np.concatenate(markings.give_way_lines([self.arm()], [], True)[0])[:, 0] > 0).all())
