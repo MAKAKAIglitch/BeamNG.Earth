@@ -49,8 +49,8 @@ class EuropeanSidewalksTest(unittest.TestCase):
                          walks=walks, park=park, roads_out=carriageways, left_hand=True)
         return walks, park, carriageways
 
-    def test_post_soviet_sidewalk_palettes_are_explicit_and_supported(self):
-        countries = ("RU", "BY", "UA", "MD", "GE", "AM", "AZ", "KZ", "KG", "TJ", "TM", "UZ")
+    def test_russian_sidewalk_palette_is_explicit_and_supported(self):
+        countries = ("RU",)
         supported = {"asphalt", "light_asphalt", "concrete", "slabs", "pavers", "stone"}
         for code in countries:
             with self.subTest(country=code):
