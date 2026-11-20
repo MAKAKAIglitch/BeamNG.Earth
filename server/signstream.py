@@ -129,7 +129,7 @@ def _speeds(frame, tx, ty, elev, context, decks, left_hand, mph, face, de_on=Fal
     global _warned
     try:
         return speedsigns.build_tile(frame, tx, ty, elev, context, decks, left_hand, mph, face, de_on=de_on,
-                                     towns=towns)
+                                     towns=towns, country=country)
     except Exception as error:
         _short()
         now = time.monotonic()
