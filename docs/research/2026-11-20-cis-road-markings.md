@@ -13,7 +13,8 @@ The renderer now uses country-aware profiles for:
 - mapped pedestrian crossings, with country-aware interpretation of OSM crossing tags;
 - crossing length by road speed where the national document gives a threshold.
 
-The renderer still uses the shared crossing texture. Exact country-specific zebra bar/gap texture patterns, arrows, hatched islands, bicycle crossings, parking/bus-stop markings and temporary work-zone markings remain follow-up work.
+The renderer uses a shared crossing texture with country-specific repeat length for Russia and Kazakhstan. More complex
+crossing variants (arrows, yellow-filled variants and traffic-signal variants), as well as arrows, hatched islands, bicycle crossings, parking/bus-stop markings and temporary work-zone markings remain follow-up work.
 
 ## Verified national references
 
@@ -71,7 +72,7 @@ Reference:
 
 ### Russia
 
-The Russian profile continues to use **ГОСТ Р 51256-2018** and the existing speed-sensitive road-marking logic. It now also drives mapped stop lines, give-way markings and pedestrian-crossing widths in the CIS junction path.
+The Russian profile continues to use **ГОСТ Р 51256-2018** and the existing speed-sensitive road-marking logic. The standard specifies zebra bars 0.40 m wide, 0.60 m gaps and a 4.0–6.0 m crossing length. The renderer uses a 4.0 m minimum and the matching 4.0 m repeat pattern. It now also drives mapped stop lines and give-way markings in the CIS junction path.
 
 The existing research note is:
 - [Road-marking standards research, 2026-10-28](2026-10-28-road-markings-standards.md)
