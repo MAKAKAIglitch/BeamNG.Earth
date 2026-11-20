@@ -82,7 +82,6 @@ COLUMNS = {
     "maxspeed": (f"TRY_CAST(regexp_extract(maxspeed, {_NUM}, 1) AS DOUBLE) * "
                  "CASE WHEN maxspeed LIKE '%mph%' THEN 1.609344 ELSE 1.0 END"),
     "maxspeed_tag": "maxspeed",
-    "motorroad": "motorroad",
     "sidewalk": "sidewalk",
     "lit": "lit",
     "smoothness": "smoothness",
@@ -95,9 +94,9 @@ COLUMNS = {
     "bx0": "bbox.xmin", "by0": "bbox.ymin", "bx1": "bbox.xmax", "by1": "bbox.ymax",
 }
 TEXT_COLUMNS = {"sidewalk", "lit", "smoothness", "osm_surface", "osm_oneway", "name", "osm_highway", "lane_hw",
-                "maxspeed_tag", "motorroad"}
+                "maxspeed_tag"}
 EXACT32 = {"bx0", "by0", "bx1", "by1", "lanes", "osm_layer"}
-USED = {"id", "bbox", "lanes", "width", "maxspeed", "motorroad", "sidewalk", "lit", "smoothness", "surface", "oneway", "layer", "name"}
+USED = {"id", "bbox", "lanes", "width", "maxspeed", "sidewalk", "lit", "smoothness", "surface", "oneway", "layer", "name"}
 UNBUILT = ("construction", "proposed")
 RACEWAY_COLUMNS = ("id", "highway", "name", "surface", "width", "lanes", "layer", "bridge", "tunnel", "oneway")
 # ---------------------------------------------------------------------------------------------------------------------
