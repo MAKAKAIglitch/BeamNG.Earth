@@ -15,7 +15,7 @@ PROFILES = {
            "classes": {"service": 20}},
     "GE": {"urban": 60, "rural": 90, "motorway": 110, "trunk": 90, "living_street": 20},
     "KG": {"urban": 60, "rural": 90, "motorway": 110, "trunk": 90, "living_street": 20},
-    "KZ": {"urban": 60, "rural": 100, "motorway": 140, "trunk": 100, "trunk_divided": 110,
+    "KZ": {"urban": 60, "rural": 100, "motorway": 140, "trunk": 100, "divided": 110,
            "living_street": 20},
     "MD": {"urban": 50, "rural": 90, "motorway": 110, "trunk": 90, "living_street": 20},
     "RU": {"urban": 60, "rural": 90, "motorway": 110, "trunk": 90, "living_street": 20},
@@ -26,7 +26,7 @@ PROFILES = {
     # UA:trunk is the OSM implicit value (110); a non-divided trunk defaults
     # to 90, while divided roads with separated directions may reach 110.
     "UA": {"urban": 50, "rural": 90, "motorway": 130, "trunk": 110, "trunk_default": 90,
-           "trunk_divided": 110, "living_street": 20},
+           "divided": 110, "living_street": 20},
     "UZ": {"urban": 70, "rural": 100, "motorway": 110, "trunk": 100, "living_street": 30},
 }
 
@@ -70,13 +70,14 @@ def default_kmh(country, spec):
     if urban:
         return profile["urban"]
 
-    if cls == "trunk":
+    if cls in {"trunk", "primary", "secondary"} and "divided" in profile:
         lanes = getattr(spec, "lanes", None)
         try:
             divided = bool(getattr(spec, "oneway", False)) and int(lanes or 0) >= 2
         except (TypeError, ValueError):
             divided = False
-        if divided and "trunk_divided" in profile:
-            return profile["trunk_divided"]
+        if divided:
+            return profile["divided"]
+    if cls == "trunk":
         return profile.get("trunk_default", profile["trunk"])
     return profile.get("classes", {}).get(cls, profile["rural"])
