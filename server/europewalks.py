@@ -8,7 +8,7 @@ from typing import NamedTuple
 import numpy as np
 import dmath
 
-VERSION = "european-street-edges-v4-cis-surfaces"
+VERSION = "european-street-edges-v4-russia-surfaces"
 STREETS = {"primary", "secondary", "tertiary", "unclassified", "residential", "living_street"}
 VILLAGE_WIDTH = dict(primary=6.1, secondary=5.8, tertiary=5.2, unclassified=4.9,
                      residential=4.6, living_street=4.0)
@@ -27,19 +27,8 @@ PALETTES = {
     "PL": ("pavers", "slabs", "pavers_mixed", "pavers_mixed"),
     "PT": ("stone", "stone", "slabs", "pavers", "light_asphalt"),
     "RO": ("pavers", "pavers", "pavers", "concrete", "light_asphalt", "asphalt"),
-    # Post-Soviet town pavements: mostly asphalt/concrete slabs and simple pavers.
+    # Russian town pavements: asphalt, concrete slabs and simple pavers.
     "RU": ("asphalt", "asphalt", "concrete", "slabs", "light_asphalt"),
-    "BY": ("asphalt", "concrete", "slabs", "asphalt", "pavers"),
-    "UA": ("asphalt", "concrete", "slabs", "pavers", "light_asphalt"),
-    "MD": ("asphalt", "concrete", "pavers", "light_asphalt"),
-    "GE": ("asphalt", "concrete", "stone", "pavers"),
-    "AM": ("asphalt", "concrete", "stone", "pavers"),
-    "AZ": ("asphalt", "concrete", "stone", "pavers"),
-    "KZ": ("asphalt", "concrete", "slabs", "light_asphalt"),
-    "KG": ("asphalt", "concrete", "slabs", "light_asphalt"),
-    "TJ": ("asphalt", "concrete", "stone", "light_asphalt"),
-    "TM": ("asphalt", "concrete", "stone", "light_asphalt"),
-    "UZ": ("asphalt", "concrete", "slabs", "light_asphalt"),
 }
 MAPPED_SURFACE = {
     "asphalt": "asphalt", "chipseal": "light_asphalt", "concrete": "concrete",
