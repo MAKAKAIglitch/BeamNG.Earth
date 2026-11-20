@@ -30,7 +30,7 @@ parking/bus-stop markings and temporary work-zone markings remain follow-up work
 - Give-way triangles 1.13: 0.50 m base, 0.90 m height and 0.30 m spacing.
 - Zebra 1.14.1: 0.40 m bars and 0.60 m gaps; crossing width 2.5–4.0 m up to 60 km/h and 4.0–6.0 m above 60 km/h.
 
-Implementation selects representative values inside the standard's allowed ranges. It does not pretend that the standard defines a single dash length for every road.
+Implementation selects representative values inside the standard's allowed ranges (2.5 m at up to 60 km/h and 4.5 m above 60 km/h for the crossing width). It does not pretend that the standard defines a single dash length for every road.
 
 References:
 - [СТ РК 1124-2019 (PDF copy)](https://vostoktranssignal.kz/upload/СТ%20РК%201124-2019.pdf)
