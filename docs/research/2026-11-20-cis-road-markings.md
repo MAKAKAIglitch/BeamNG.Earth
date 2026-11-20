@@ -79,9 +79,26 @@ The Russian profile continues to use **ГОСТ Р 51256-2018** and the existing
 The existing research note is:
 - [Road-marking standards research, 2026-10-28](2026-10-28-road-markings-standards.md)
 
+## Additional national rules verified
+
+These countries explicitly identify marking 1.3 as a double solid centre line on roads with four or more lanes. Their exact line widths, dash lengths and crossing geometry still need country-specific dimensional verification, so only the double-centre behaviour is enabled:
+
+- **Armenia:** the official Armstandard catalogue lists active AST GOST R 51256-2023 and AST GOST R 52289-2022.
+- **Azerbaijan:** the Law on Road Traffic, Annex 5, identifies 1.3 for roads with four or more lanes.
+- **Georgia:** the current Law on Road Traffic, Annex 2, identifies 1.3 for four-or-more-lane roads and distinguishes 1.2.1 (solid motorway edge) from 1.2.2 (wide broken road edge). The renderer uses a 0.20 m / 3 m–3 m visual approximation for 1.2.2 because the accessible legal text gives the type but not its dimensions.
+- **Kyrgyzstan:** the Ministry of Internal Affairs' GUOBDD publishes Annex 2 and explicitly identifies 1.3 for four-or-more-lane roads.
+- **Uzbekistan:** Cabinet of Ministers Resolution No. 172 (12 April 2022), Annex 2, identifies 1.3 for four-or-more-lane roads. It also has distinctive white-yellow and white-red pedestrian-crossing variants; those colours are not yet rendered.
+
+References:
+- [Armenia — Armstandard catalogue, road-marking standards](https://www.armstandard.am/ru/list/471)
+- [Azerbaijan — Law on Road Traffic, Annex 5](https://mia.gov.az/ru/legislation/1/view/9/)
+- [Georgia — Law on Road Traffic, Annex 2](https://pdd.ge/ru/documents/road-traffic-law-annexes)
+- [Kyrgyzstan — GUOBDD, PDD Annex 2](https://guobdd.kg/trafficregulationsitem/26)
+- [Uzbekistan — Lex.uz, Resolution No. 172, Annex 2](https://lex.uz/docs/5953887)
+
 ## Countries awaiting individual verification
 
-Profiles exist for Armenia, Azerbaijan, Belarus, Georgia, Kyrgyzstan, Tajikistan, Turkmenistan and Uzbekistan, but their dimensions are deliberately left on the conservative white-line fallback until the current national standards are checked. Their profiles are separate objects so national values can be added independently.
+Belarus, Tajikistan and Turkmenistan retain the conservative white-line fallback until their current national technical standards and PDD annexes are checked. Their profiles are separate objects so national values can be added independently.
 
 A shared marking-number system or a reference to an intergovernmental GOST is not proof that every country's line widths, dash lengths, crossing geometry and application rules are identical.
 
