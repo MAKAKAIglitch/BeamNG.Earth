@@ -122,7 +122,7 @@ VERSION = 2                     # pipeline version: bump when what a cell's laye
 # roads 9: OpenStreetMap's busways appended (osmtags.busway_features). Overture emits none, as with raceways.
 # (osmtags.is_outline, a raceway that is a circuit site's outline left out, GitHub #1010: as #184, only cells fetched
 # after it; the cached ones with the next Overture release bump)
-LAYER_VERSIONS = {"roads": 10}      # 10: preserve symbolic OSM maxspeed tags for country-specific resolution
+LAYER_VERSIONS = {"roads": 11}      # 11: preserve symbolic maxspeed and motorroad OSM tags
 LANE_CONTEXT_CELLS = 16       # neighbour cells' raw road layers kept for slip-road mouths (lanesections.split's context)
 # (LidarBC's measured canopy heights, maprasters.bc_canopy, are opt-in: BNE_BC_CANOPY=1 fills cells built after it;
 # no canopy version bump, which would fetch every player's canopy cells again)
