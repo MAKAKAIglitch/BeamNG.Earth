@@ -13,7 +13,7 @@ The order of precedence is:
 |---|---:|---:|---:|---|
 | Armenia (AM) | 60 | 90 | 110 | Residential/courtyard areas: 20 |
 | Azerbaijan (AZ) | 60 | 90 | 110 | Residential/courtyard areas: 20; local signed urban exceptions can be higher |
-| Belarus (BY) | 60 | 90 | 120 | The law also allows 120 on roads for automobiles; current Layercake data has no `motorroad` column, so that road type is not inferred separately |
+| Belarus (BY) | 60 | 90 | 120 | Law also allows 120 on roads for automobiles; Layercake has no `motorroad` column, so only `highway=motorway` gets that default |
 | Georgia (GE) | 60 | 90 | 110 | Residential areas: 20 |
 | Kyrgyzstan (KG) | 60 | 90 | 110 | Residential areas: 20 |
 | Kazakhstan (KZ) | 60 | 100 | up to 140 | Divided carriageway: 110; motorway cap depends on the applicable sign; residential areas: 20 |
@@ -24,7 +24,7 @@ The order of precedence is:
 | Ukraine (UA) | 50 | 90 | 130 | Divided trunk roads: 110; residential areas: 20 |
 | Uzbekistan (UZ) | 70 | 100 | 110 | Some cities/centres use 60 by local regime; residential areas: 20 |
 
-`divided` is applied to one-way trunk, primary, or secondary features with at least two mapped lanes in Kazakhstan and Ukraine. It models the divided-carriageway exception; an explicit numeric OSM limit always overrides it.
+`divided` is applied to one-way `trunk`, `primary`, or `secondary` features with at least two mapped lanes in Kazakhstan and Ukraine. It models the divided-carriageway exception; an explicit numeric OSM limit always overrides it.
 
 
 The symbolic resolver recognises only suffixes explicitly present in the relevant country profile: `urban`, `rural`, `motorway`, `trunk`, and `living_street`. It also accepts the historical/transposed Russian spelling `RU:rual` as an alias for `RU:rural`.
