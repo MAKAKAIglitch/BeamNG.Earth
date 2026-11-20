@@ -4,6 +4,7 @@ import os
 import sys
 import unittest
 from unittest import mock
+from types import SimpleNamespace
 
 import numpy as np
 
@@ -37,6 +38,19 @@ def place(rows, box=(-5000, -5000, 5000, 5000), polys=(), left_hand=False, face=
 
 def near(signs, x, y, r):
     return [s for s in signs if np.hypot(s[0] - x, s[1] - y) < r]
+
+
+class CountryProfileSignsTest(unittest.TestCase):
+    def test_speed_sign_uses_the_same_country_profile_as_traffic(self):
+        from test_roads import features
+        feats = features([[(0, 0), (200, 0)]], ["trunk"])
+        spec = SimpleNamespace(kmh=None, cls="trunk", urban=False, oneway=False, lanes=None, link=False)
+        ru = speedsigns._limits(feats, 0, spec, False, speedsigns.STYLE_VIENNA, country="RU")
+        kz = speedsigns._limits(feats, 0, spec, False, speedsigns.STYLE_VIENNA, country="KZ")
+        by = speedsigns._limits(feats, 0, spec, False, speedsigns.STYLE_VIENNA, country="BY")
+        self.assertEqual(ru, [(0.0, 90.0)])
+        self.assertEqual(kz, [(0.0, 100.0)])
+        self.assertEqual(by, [(0.0, 120.0)])
 
 
 @unittest.skipUnless(getattr(fast._ef, "VERSION", 0) >= speedsigns.KERNEL, "earthfast with the speed-sign kernels")
