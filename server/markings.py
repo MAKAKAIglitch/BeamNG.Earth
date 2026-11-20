@@ -91,14 +91,15 @@ _CIS_GOST_32953 = frozenset({"AM", "BY", "KG", "KZ", "RU", "TJ"})
 
 _CIS_BASE = _WHITE._replace(double_centre=False, stop_line_w=0.40, yield_h=0.70, yield_base=0.50,
                             yield_gap=0.50, crosswalk_min=3.0, crosswalk_fast=4.0)
-_AM = _CIS_BASE._replace()
-_AZ = _CIS_BASE._replace()
-_BY = _CIS_BASE._replace()
-_GE = _CIS_BASE._replace()
-_KG = _CIS_BASE._replace()
-_TJ = _CIS_BASE._replace()
-_TM = _CIS_BASE._replace()
-_UZ = _CIS_BASE._replace()
+# These national rules explicitly define marking 1.3 as the double solid line on four-or-more-lane roads.
+_AM = _CIS_BASE._replace(double_centre=True)  # AST GOST R 51256-2023 / AST GOST R 52289-2022
+_AZ = _CIS_BASE._replace(double_centre=True)  # Azerbaijan Traffic Law, Annex 5
+_BY = _CIS_BASE._replace()                    # dimensional and application profile still being verified
+_GE = _CIS_BASE._replace(double_centre=True, edge=0.20, edge_motorway=0.20, edge_pattern=(3.0, 3.0))
+_KG = _CIS_BASE._replace(double_centre=True)  # Kyrgyz PDD, Annex 2
+_TJ = _CIS_BASE._replace()                    # national technical profile still being verified
+_TM = _CIS_BASE._replace()                    # national technical profile still being verified
+_UZ = _CIS_BASE._replace(double_centre=True)  # Uzbekistan PDD, Annex 2
 
 # Kazakhstan: ST RK 1124-2019 and ST RK 1412-2017. White longitudinal markings;
 # 1.5 dash/gap ratio 1:3, speed-dependent lengths; 1.2 motorway edge 0.20 m;
