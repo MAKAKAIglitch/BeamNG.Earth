@@ -99,10 +99,10 @@ class VegetationTest(unittest.TestCase):
         self.assertGreater(off, curb - 1.0, "beside the road")
         self.assertLess(off, curb + 3.0)                   # (whole CHM pixels, ~2 m here)
 
-    def test_post_soviet_roadside_tree_push_policy(self):
+    def test_russian_roadside_tree_push_policy(self):
         allowed = veg.roadside_tree_move_allowed(
-            ['RU', 'KZ', 'BY', 'UA', 'KG', 'UZ', 'DE', 'US', None, 'XX'])
-        np.testing.assert_array_equal(allowed, [False, False, False, False, False, False,
+            ['RU', 'BY', 'KZ', 'UA', 'KG', 'UZ', 'DE', 'US', None, 'XX'])
+        np.testing.assert_array_equal(allowed, [False, True, True, True, True, True,
                                                 True, True, True, True])
 
     def test_a_wider_drawn_road_pushes_its_tree_further(self):
