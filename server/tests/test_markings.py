@@ -68,6 +68,7 @@ class StyleTest(unittest.TestCase):
         self.assertAlmostEqual(kz.yield_gap, 0.30)
         self.assertEqual(kz.crosswalk_urban_min, 2.5)
         self.assertEqual(kz.crosswalk_tl, 4.0)
+        self.assertEqual(kz.crosswalk_fast, 4.5)
         self.assertEqual(markings.style("RU").crosswalk_tl, 4.0)
         self.assertEqual(markings.style("RU").crosswalk_min, 4.0)
         self.assertEqual(markings.road_style("KZ", kmh=50).centre_rural, (2.0, 6.0))
