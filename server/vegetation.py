@@ -117,7 +117,7 @@ RUSSIAN_NO_ROADSIDE_TREE_PUSH = frozenset(
 
 
 def roadside_tree_move_allowed(codes):
-    """Vector mask: do not synthesize roadside tree pits in post-Soviet countries."""
+    """Vector mask: do not synthesize roadside tree pits in Russia."""
     return np.fromiter((str(code or "").upper() not in RUSSIAN_NO_ROADSIDE_TREE_PUSH
                         for code in codes), dtype=bool, count=len(codes))
 
@@ -482,7 +482,7 @@ class Vegetation:
             ok = (nc >= 0) & (nc < n_c) & (nr >= 0) & (nr < n_r)
             ok[ok] &= ~blocked[nr[ok], nc[ok]] & ~curb[nr[ok], nc[ok]]
             # The normal street-tree heuristic shifts a crown found over asphalt
-            # onto the nearest tree pit. Suppress that shift in the post-Soviet
+            # onto the nearest tree pit. Suppress that shift in Russia
             # region, where such deliberate roadside rows are not a safe default.
             # Border lookup is batched and only runs in the broad Eurasian window.
             if ok.any() and lat1 > 34.0 and lat0 < 84.0 and (lon1 > 18.0 or lon0 < -168.0):
