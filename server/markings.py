@@ -88,7 +88,7 @@ RUSSIAN_MARKING_COUNTRIES = ("RU",)
 CIS_MARKING_COUNTRIES = ("AM", "AZ", "BY", "GE", "KG", "KZ", "MD", "RU", "TJ", "TM", "UA", "UZ")
 _CIS_GOST_32953 = frozenset({"AM", "BY", "KG", "KZ", "RU", "TJ"})
 
-_CIS_BASE = _WHITE._replace(double_centre=True, stop_line_w=0.40, yield_h=0.70, yield_base=0.50,
+_CIS_BASE = _WHITE._replace(double_centre=False, stop_line_w=0.40, yield_h=0.70, yield_base=0.50,
                             yield_gap=0.50, crosswalk_min=3.0, crosswalk_fast=4.0)
 _AM = _CIS_BASE._replace()
 _AZ = _CIS_BASE._replace()
